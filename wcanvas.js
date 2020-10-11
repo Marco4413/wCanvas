@@ -23,18 +23,21 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export const version = "0.0.2";
+export const version = "0.0.3";
 
 let uuid = 0;
 export const generateUUID = () => { return uuid++; }
 
 /**
- * @typedef wcanvasConfig - wCanvas' config
+ * @typedef wcanvasConfig - wCanvas's config
  * @property {String} id - The id of the canvas you want to wrap
  * @property {HTMLCanvasElement} canvas - The canvas you want to wrap
  * @property {Number} width - The width of the canvas
  * @property {Number} height - The height of the canvas
- * @property {(this: wcanvas, window: Window, event: UIEvent) => {}} onResize - A callback that's called on window resize
+ * @property {(canvas: wcanvas, window: Window, event: UIEvent) => {}} onResize - A callback that's called on window resize
+ * @property {(canvas: wcanvas) => {}} onSetup - Function that gets called after the class was constructed
+ * @property {(canvas: wcanvas) => {}} onDraw - Function that gets called every frame
+ * @property {Number} FPS - The targetted FPS (If negative it will draw every time the browser lets it)
  */
 
 export class wcanvas {
@@ -42,42 +45,72 @@ export class wcanvas {
      * @param {wcanvasConfig} config
      */
     constructor(config) {
+        // If no config was given then set it to an empty object
         config = config === undefined ? {} : config;
 
+        // Check if a Canvas was specified
         if (config.canvas === undefined) {
+            // Check if an ID was specified
             if (config.id === undefined) {
+                // If no ID was given then create a new canvas using an UUID
                 this.canvas = document.createElement("canvas");
                 this.canvas.id = String(generateUUID());
                 document.body.appendChild(this.canvas);
             } else {
+                // Get the canvas with the given ID
                 /**
                  * @type {HTMLCanvasElement}
                  */
                 this.canvas = document.getElementById(config.id);
             }
         } else {
+            // Use the specified canvas
             this.canvas = config.canvas;
         }
 
+        // Get the context of the created Canvas
         this.context = this.canvas.getContext("2d");
 
-        if (config.onResize === undefined) {
-            if (config.width === undefined || config.height === undefined) {
-                const onResize = () => {
-                    this.canvas.width = window.innerWidth;
-                    this.canvas.height = window.innerHeight;
-                }
+        // If a width and a height were given then set canvas's width and height to them
+        if (config.width !== undefined && config.height !== undefined) {
+            this.canvas.width = config.width;
+            this.canvas.height = config.height;
+        }
 
-                window.addEventListener("resize", onResize);
-                onResize();
-            } else {
-                this.canvas.width = config.width;
-                this.canvas.height = config.height;
+        // Check if resize callback was given
+        if (config.onResize === undefined) {
+            // If it wasn't given then make the canvas always resize to be fullscreen
+            const onResize = () => {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
             }
+
+            window.addEventListener("resize", onResize);
+            onResize();
         } else {
+            // If it was add it to the window's event listener
             window.addEventListener("resize", (window, event) => {
                 config.onResize(this, window, event);
             });
         }
+
+        // A negative number of FPS means "Draw every time the browser lets you"
+        this.FPS = config.FPS === undefined ? -1 : config.FPS;
+
+        /**
+         * @param {...any} args - Arguments to be passed to setup function
+         */
+        this.setup = (...args) => {
+            config.onSetup(this, ...args);
+        };
+
+        /**
+         * @param {...any} args - Arguments to be passed to draw function
+         */
+        this.draw = (...args) => {
+            config.onDraw(this, ...args);
+        };
+
+        this.setup();
     }
 }
