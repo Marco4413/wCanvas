@@ -23,7 +23,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export const version = "0.1.0";
+export const version = "0.1.1";
 
 let uuid = 0;
 /**
@@ -68,6 +68,7 @@ export const formatString = (str = "", ...formats) => {
 /**
  * @typedef {Object} __TextSpecificConfig
  * @property {Number} maxWidth - Text's max width
+ * @property {Boolean} returnWidth - Whether or not to return text's width after it was drawn
  * 
  * @typedef {ShapeConfig & __TextSpecificConfig} TextConfig - Texts' config
  */
@@ -403,6 +404,37 @@ export class wCanvas {
     }
 
     /**
+     * Draws a shape from the specified vertices
+     * @param {Array<Array<Number>>} vertices - Array of Vertices (A vertex is this kind of array [x, y])
+     * @param {ShapeConfig} config - Other options
+     */
+    shape(vertices, config = {}) {
+        if (vertices.length <= 1) {
+            return;
+        }
+
+        this.context.beginPath();
+
+        const firstVertex = vertices[0];
+        this.context.moveTo(firstVertex[0], firstVertex[1]);
+
+        for (let i = 1; i < vertices.length; i++) {
+            const vertex = vertices[i];
+            this.context.lineTo(vertex[0], vertex[1]);
+        }
+
+        this.context.closePath();
+
+        if (!config.noFill) {
+            this.context.fill();
+        }
+
+        if (!config.noStroke) {
+            this.context.stroke();
+        }
+    }
+
+    /**
      * Changes font
      * @param {Font} font - The new font to use
      */
@@ -423,6 +455,7 @@ export class wCanvas {
      * @param {Number} x - The x coordinate where the text should be drawn
      * @param {Number} y - The y coordinate where the text should be drawn
      * @param {TextConfig} config - Other options
+     * @returns {undefined|Number} If config.returnWidth is true it returns text's width
      */
     text(text, x, y, config = { "noStroke": true }) {
         if (!config.noFill) {
@@ -431,6 +464,10 @@ export class wCanvas {
 
         if (!config.noStroke) {
             this.context.strokeText(text, x, y, config.maxWidth);
+        }
+
+        if (config.returnWidth) {
+            return this.context.measureText(text).width;
         }
     }
 }
