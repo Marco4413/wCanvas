@@ -2,9 +2,9 @@
 import * as wcanvas from "../wcanvas.js";
 
 window.addEventListener("load", () => {
-    let time = 0;
+    const font = new wcanvas.Font("Times New Roman", 12);
 
-    const wrappedCanvas = new wcanvas.wcanvas({
+    const wrappedCanvas = new wcanvas.wCanvas({
         "onSetup": (canvas) => {
             console.log("WCanvas Version: " + wcanvas.version);
             console.log("Canvas ID: " + canvas.canvas.id);
@@ -26,6 +26,7 @@ window.addEventListener("load", () => {
             canvas.strokeWeigth(4);
             canvas.line(0, 0, 100, 100);
 
+            canvas.textFont(font);
             canvas.textSize(20);
             canvas.text("This is a cool text", 100, 100);
         }
