@@ -15,6 +15,9 @@ window.addEventListener("load", () => {
             console.log("Frame Time: " + deltaTime);
 
             canvas.background();
+            canvas.translate(100 * Math.SQRT2, 0);
+            canvas.rotate(Math.PI / 4);
+            canvas.scale(2, 2);
             
             canvas.fill(0, 0, 255);
             canvas.rect(0, 0, 100, 100, { "noStroke": true });
@@ -26,6 +29,7 @@ window.addEventListener("load", () => {
             canvas.strokeWeigth(4);
             canvas.line(0, 0, 100, 100);
 
+            canvas.rotate(-Math.PI / 4);
             canvas.textFont(font);
             canvas.textSize(20);
             canvas.text("This is a cool text", 100, 100);
