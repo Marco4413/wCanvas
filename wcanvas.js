@@ -23,9 +23,12 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export const version = "0.0.9";
+export const version = "0.1.0";
 
 let uuid = 0;
+/**
+ * @returns {Number} An UUID
+ */
 export const generateUUID = () => { return uuid++; }
 
 /**
@@ -34,7 +37,7 @@ export const generateUUID = () => { return uuid++; }
  * @param {...any} formats - The things to replace {i} with
  * @returns {String} The formatted string
  */
-export const formatString = (str, ...formats) => {
+export const formatString = (str = "", ...formats) => {
     formats.forEach(
         (format, i) => {
             str = str.replace("{" + i + "}", String(format));
@@ -247,6 +250,32 @@ export class wCanvas {
         } else {
             this.context.restore();
         }
+    }
+
+    /**
+     * Translates every next shape by the specified offset
+     * @param {Number} x - X translation
+     * @param {Number} y - Y translation
+     */
+    translate(x = 0, y = 0) {
+        this.context.translate(x, y);
+    }
+    
+    /**
+     * Rotates every next shape by the specified angle in radians
+     * @param {Number} angle - Angle in radians
+     */
+    rotate(angle = 0) {
+        this.context.rotate(angle);
+    }
+
+    /**
+     * Scales every next shape by the specified values
+     * @param {Number} x - Horizontal Scale
+     * @param {Number} y - Vertical Scale
+     */
+    scale(x = 1, y = 1) {
+        this.context.scale(x, y);
     }
 
     /**
