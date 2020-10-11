@@ -32,7 +32,17 @@ window.addEventListener("load", () => {
             canvas.rotate(-Math.PI / 4);
             canvas.textFont(font);
             canvas.textSize(20);
-            canvas.text("This is a cool text", 100, 100);
+            const textWidth = canvas.text(
+                "This is a cool text", 100, 100,
+                { "noStroke": true, "returnWidth": true }
+            );
+
+            canvas.shape(
+                [[100, 100],
+                 [100 + textWidth, 100],
+                 [100 + textWidth / 2, 200]],
+                { "noFill": false, "noStroke": true, "round": true }
+            );
         }
     });
 });
