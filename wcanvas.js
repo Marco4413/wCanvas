@@ -23,7 +23,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export const version = "0.0.5";
+export const version = "0.0.6";
 
 let uuid = 0;
 export const generateUUID = () => { return uuid++; }
@@ -50,10 +50,7 @@ export class wcanvas {
     /**
      * @param {wcanvasConfig} config
      */
-    constructor(config) {
-        // If no config was given then set it to an empty object
-        config = config === undefined ? {} : config;
-
+    constructor(config = {}) {
         // Check if a Canvas was specified
         if (config.canvas === undefined) {
             // Check if an ID was specified
@@ -196,7 +193,7 @@ export class wcanvas {
      * @param {Number} g - Green [0, 255]
      * @param {Number} b - Blue [0, 255]
      */
-    background(r, g, b) {
+    background(r = 0, g = 0, b = 0) {
         this.context.save();
         
         this.context.resetTransform();
@@ -212,7 +209,7 @@ export class wcanvas {
      * @param {Number} g - Green [0, 255]
      * @param {Number} b - Blue [0, 255]
      */
-    fill(r, g, b) {
+    fill(r = 255, g = 255, b = 255) {
         this.context.fillStyle = "rgb(" + [r, g, b].join(", ") + ")";
     }
 
@@ -222,7 +219,7 @@ export class wcanvas {
      * @param {Number} g - Green [0, 255]
      * @param {Number} b - Blue [0, 255]
      */
-    stroke(r, g, b) {
+    stroke(r = 0, g = 0, b = 0) {
         this.context.fillStyle = "rgb(" + [r, g, b].join(", ") + ")";
     }
 
@@ -230,7 +227,7 @@ export class wcanvas {
      * Changes stroke diameter
      * @param {Number} d - The diameter of the stroke
      */
-    strokeWeigth(d) {
+    strokeWeigth(d = 1) {
         this.context.lineWidth = d;
     }
 
@@ -242,15 +239,56 @@ export class wcanvas {
      * @param {Number} h - The height of the rectangle
      * @param {ShapeConfig} config - Other options
      */
-    rect(x, y, w, h, config) {
-        config = config === undefined ? {} : config;
-
+    rect(x, y, w, h, config = {}) {
         if (!config.noFill) {
             this.context.fillRect(x, y, w, h);
         }
 
         if (!config.noStroke) {
             this.context.strokeRect(x, y, w, h);
+        }
+    }
+
+    /**
+     * Draws a circle at the specified location with the specified properties
+     * @param {Number} x - The x coordinate where the circle should be drawn
+     * @param {Number} y - The y coordinate where the circle should be drawn
+     * @param {Number} r - The radius of the circle
+     * @param {ShapeConfig} config - Other options
+     */
+    circle(x, y, r, config = {}) {
+        this.context.beginPath();
+
+        this.context.arc(x, y, r, 0, Math.PI * 2);
+        
+        if (!config.noFill) {
+            this.context.fill();
+        }
+
+        if (!config.noStroke) {
+            this.context.stroke();
+        }
+    }
+
+    /**
+     * Draws an ellipse at the specified location with the specified properties
+     * @param {Number} x - The x coordinate where the ellipse should be drawn
+     * @param {Number} y - The y coordinate where the ellipse should be drawn
+     * @param {Number} rX - The radius on the x axis of the ellipse
+     * @param {Number} rY - The radius on the y axis of the ellipse
+     * @param {ShapeConfig} config - Other options
+     */
+    ellipse(x, y, rX, rY = rX, config = {}) {
+        this.context.beginPath();
+
+        this.context.ellipse(x, y, rX, rY, 0, 0, Math.PI * 2);
+        
+        if (!config.noFill) {
+            this.context.fill();
+        }
+
+        if (!config.noStroke) {
+            this.context.stroke();
         }
     }
 }
