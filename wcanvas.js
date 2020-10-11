@@ -23,7 +23,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export const version = "0.0.3";
+export const version = "0.0.4";
 
 let uuid = 0;
 export const generateUUID = () => { return uuid++; }
