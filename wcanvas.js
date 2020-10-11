@@ -227,7 +227,7 @@ export class wcanvas {
     }
 
     /**
-     * Change's stroke diameter
+     * Changes stroke diameter
      * @param {Number} d - The diameter of the stroke
      */
     strokeWeigth(d) {
