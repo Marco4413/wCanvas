@@ -14,9 +14,13 @@ window.addEventListener("load", () => {
         "onDraw": (canvas, deltaTime) => {
             console.log("Frame Time: " + deltaTime);
 
-            canvas.background(0, 0, 0);
+            canvas.background();
+            
             canvas.fill(0, 0, 255);
-            canvas.rect(0, 0, 100, 100, );
+            canvas.rect(0, 0, 100, 100, { "noStroke": true });
+
+            canvas.fill();
+            canvas.ellipse(50, 50, 50, undefined, { "noStroke": true });
         }
     });
 });
