@@ -23,13 +23,13 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export const version = "0.0.7";
+export const version = "0.0.8";
 
 let uuid = 0;
 export const generateUUID = () => { return uuid++; }
 
 /**
- * @typedef wcanvasConfig - wCanvas's config
+ * @typedef {Object} wcanvasConfig - wCanvas's config
  * @property {String} id - The id of the canvas you want to wrap
  * @property {HTMLCanvasElement} canvas - The canvas you want to wrap
  * @property {Number} width - The width of the canvas
@@ -41,12 +41,19 @@ export const generateUUID = () => { return uuid++; }
  */
 
 /**
- * @typedef ShapeConfig - Shapes' config
+ * @typedef {Object} ShapeConfig - Shapes' config
  * @property {Boolean} noStroke - Whether or not stroke should be applied
  * @property {Boolean} noFill - Whether or not the shape should be filled
  */
 
-export class wcanvas {
+/**
+ * @typedef {Object} __TextSpecificConfig
+ * @property {Number} maxWidth - Text's max width
+ * 
+ * @typedef {ShapeConfig & __TextSpecificConfig} TextConfig - Texts' config
+ */
+
+ export class wcanvas {
     /**
      * @param {wcanvasConfig} config
      */
@@ -309,5 +316,29 @@ export class wcanvas {
         this.context.stroke();
 
         this.context.restore();
+    }
+
+    /**
+     * Changes font's size
+     * @param {Number} size - The new size for the font
+     */
+    textSize(size = 12) {
+        this.context.font = this.context.font.replace(/\d+px/g, String(size) + "px");
+    }
+
+    /**
+     * @param {String} text - The text to be written
+     * @param {Number} x - The x coordinate where the text should be drawn
+     * @param {Number} y - The y coordinate where the text should be drawn
+     * @param {TextConfig} config - Other options
+     */
+    text(text, x, y, config = { "noStroke": true }) {
+        if (!config.noFill) {
+            this.context.fillText(text, x, y, config.maxWidth);
+        }
+
+        if (!config.noStroke) {
+            this.context.strokeText(text, x, y, config.maxWidth);
+        }
     }
 }
