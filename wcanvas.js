@@ -227,11 +227,11 @@ export class wcanvas {
     }
 
     /**
-     * Change's stroke radius
-     * @param {Number} r - The radius of the stroke
+     * Change's stroke diameter
+     * @param {Number} d - The diameter of the stroke
      */
-    strokeWeigth(r) {
-        this.context.lineWidth = r;
+    strokeWeigth(d) {
+        this.context.lineWidth = d;
     }
 
     /**
