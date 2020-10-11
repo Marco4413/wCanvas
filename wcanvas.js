@@ -23,20 +23,36 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export const version = "0.0.8";
+export const version = "0.0.9";
 
 let uuid = 0;
 export const generateUUID = () => { return uuid++; }
 
 /**
- * @typedef {Object} wcanvasConfig - wCanvas's config
+ * Formats a string by replacing "{i}" with formats[i]
+ * @param {String} str - The string to format
+ * @param {...any} formats - The things to replace {i} with
+ * @returns {String} The formatted string
+ */
+export const formatString = (str, ...formats) => {
+    formats.forEach(
+        (format, i) => {
+            str = str.replace("{" + i + "}", String(format));
+        }
+    );
+
+    return str;
+}
+
+/**
+ * @typedef {Object} wCanvasConfig - wCanvas's config
  * @property {String} id - The id of the canvas you want to wrap
  * @property {HTMLCanvasElement} canvas - The canvas you want to wrap
  * @property {Number} width - The width of the canvas
  * @property {Number} height - The height of the canvas
- * @property {(canvas: wcanvas, window: Window, event: UIEvent) => {}} onResize - A callback that's called on window resize
- * @property {(canvas: wcanvas) => {}} onSetup - Function that gets called after the class was constructed
- * @property {(canvas: wcanvas, deltaTime: Number) => {}} onDraw - Function that gets called every frame
+ * @property {(canvas: wCanvas, window: Window, event: UIEvent) => {}} onResize - A callback that's called on window resize
+ * @property {(canvas: wCanvas) => {}} onSetup - Function that gets called after the class was constructed
+ * @property {(canvas: wCanvas, deltaTime: Number) => {}} onDraw - Function that gets called every frame
  * @property {Number} FPS - The targetted FPS (If negative it will draw every time the browser lets it)
  */
 
@@ -53,9 +69,51 @@ export const generateUUID = () => { return uuid++; }
  * @typedef {ShapeConfig & __TextSpecificConfig} TextConfig - Texts' config
  */
 
- export class wcanvas {
+export class Font {
     /**
-     * @param {wcanvasConfig} config
+     * @param {String} fontFamily - The Font Family to use
+     * @param {Number} fontSize - The size of the font
+     * @param {...String} attributes - All the extra CSS Attributes for the font
+     */
+    constructor(fontFamily = "Arial", fontSize = 12, ...attributes) {
+        this.fontFamily = fontFamily;
+        this.fontSize = fontSize;
+        this.attributes = attributes;
+    }
+
+    /**
+     * @returns {String} The font as a CSS property
+     */
+    toCSSProperty() {
+        return formatString("{0} {1}px \"{2}\"", this.attributes.join(" "), this.fontSize, this.fontFamily);
+    }
+}
+
+export class wCanvas {
+    /**
+     * The target FPS of the canvas
+     * @type {Number}
+     */
+    FPS;
+    /**
+     * he canvas that is currently wrapped
+     * @type {HTMLCanvasElement} 
+     */
+    canvas;
+    /**
+     * The time at which the last frame was drawn
+     * @type {Number}
+     */
+    lastFrame;
+    /**
+     * Whether or not this is running a draw loop (Should only be read)
+     * @readonly
+     * @type {Boolean}
+     */
+    looping;
+
+    /**
+     * @param {wCanvasConfig} config - The config to create the wCanvas with
      */
     constructor(config = {}) {
         // Check if a Canvas was specified
@@ -68,9 +126,6 @@ export const generateUUID = () => { return uuid++; }
                 document.body.appendChild(this.canvas);
             } else {
                 // Get the canvas with the given ID
-                /**
-                 * @type {HTMLCanvasElement}
-                 */
                 this.canvas = document.getElementById(config.id);
             }
         } else {
@@ -316,6 +371,14 @@ export const generateUUID = () => { return uuid++; }
         this.context.stroke();
 
         this.context.restore();
+    }
+
+    /**
+     * Changes font
+     * @param {Font} font - The new font to use
+     */
+    textFont(font = new Font()) {
+        this.context.font = font.toCSSProperty();
     }
 
     /**
