@@ -21,6 +21,10 @@ window.addEventListener("load", () => {
 
             canvas.fill();
             canvas.ellipse(50, 50, 50, undefined, { "noStroke": true });
+            
+            canvas.stroke(255, 0, 0);
+            canvas.strokeWeigth(4);
+            canvas.line(0, 0, 100, 100);
         }
     });
 });
