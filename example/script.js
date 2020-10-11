@@ -25,6 +25,9 @@ window.addEventListener("load", () => {
             canvas.stroke(255, 0, 0);
             canvas.strokeWeigth(4);
             canvas.line(0, 0, 100, 100);
+
+            canvas.textSize(20);
+            canvas.text("This is a cool text", 100, 100);
         }
     });
 });
