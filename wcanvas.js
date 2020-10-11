@@ -23,7 +23,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export const version = "0.0.4";
+export const version = "0.0.5";
 
 let uuid = 0;
 export const generateUUID = () => { return uuid++; }
@@ -38,6 +38,12 @@ export const generateUUID = () => { return uuid++; }
  * @property {(canvas: wcanvas) => {}} onSetup - Function that gets called after the class was constructed
  * @property {(canvas: wcanvas, deltaTime: Number) => {}} onDraw - Function that gets called every frame
  * @property {Number} FPS - The targetted FPS (If negative it will draw every time the browser lets it)
+ */
+
+/**
+ * @typedef ShapeConfig - Shapes' config
+ * @property {Boolean} noStroke - Whether or not stroke should be applied
+ * @property {Boolean} noFill - Whether or not the shape should be filled
  */
 
 export class wcanvas {
@@ -81,8 +87,8 @@ export class wcanvas {
         if (config.onResize === undefined) {
             // If it wasn't given then make the canvas always resize to be fullscreen
             const onResize = () => {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
+                this.canvas.width = window.innerWidth + 1;
+                this.canvas.height = window.innerHeight + 1;
             }
 
             window.addEventListener("resize", onResize);
@@ -125,9 +131,13 @@ export class wcanvas {
 
         const callDraw = () => {
             if (this.FPS !== 0) {
+                this.context.save();
+                
                 const newTimestamp = Date.now();
                 this.draw((newTimestamp - this.lastFrame) / 1_000);
                 this.lastFrame = newTimestamp;
+
+                this.context.restore();
             }
 
             if (!this.looping) {
@@ -150,5 +160,97 @@ export class wcanvas {
      */
     stopLoop() {
         this.looping = false;
+    }
+
+    /**
+     * Saves canvas context to be restored at a later date
+     * @param {Number} n - How many times the context should be saved
+     */
+    save(n) {
+        if (n) {
+            for (let i = 0; i < n; i++) {
+                this.context.save();
+            }
+        } else {
+            this.context.save();
+        }
+    }
+
+    /**
+     * Restores canvas context from last save
+     * @param {Number} n - How many times the context should be restored
+     */
+    restore(n) {
+        if (n) {
+            for (let i = 0; i < n; i++) {
+                this.context.restore();
+            }
+        } else {
+            this.context.restore();
+        }
+    }
+
+    /**
+     * Draws a rectangle that fills the entire canvas
+     * @param {Number} r - Red [0, 255]
+     * @param {Number} g - Green [0, 255]
+     * @param {Number} b - Blue [0, 255]
+     */
+    background(r, g, b) {
+        this.context.save();
+        
+        this.context.resetTransform();
+        this.fill(r, g, b);
+        this.rect(0, 0, this.canvas.width, this.canvas.height, { "noStroke": true });
+        
+        this.context.restore();
+    }
+
+    /**
+     * Sets the color to be used to fill shapes
+     * @param {Number} r - Red [0, 255]
+     * @param {Number} g - Green [0, 255]
+     * @param {Number} b - Blue [0, 255]
+     */
+    fill(r, g, b) {
+        this.context.fillStyle = "rgb(" + [r, g, b].join(", ") + ")";
+    }
+
+    /**
+     * Sets the color to be used for shapes contours
+     * @param {Number} r - Red [0, 255]
+     * @param {Number} g - Green [0, 255]
+     * @param {Number} b - Blue [0, 255]
+     */
+    stroke(r, g, b) {
+        this.context.fillStyle = "rgb(" + [r, g, b].join(", ") + ")";
+    }
+
+    /**
+     * Change's stroke radius
+     * @param {Number} r - The radius of the stroke
+     */
+    strokeWeigth(r) {
+        this.context.lineWidth = r;
+    }
+
+    /**
+     * Draws a rectangle at the specified location with the specified properties
+     * @param {Number} x - The x coordinate where the rectangle should be drawn
+     * @param {Number} y - The y coordinate where the rectangle should be drawn
+     * @param {Number} w - The width of the rectangle
+     * @param {Number} h - The height of the rectangle
+     * @param {ShapeConfig} config - Other options
+     */
+    rect(x, y, w, h, config) {
+        config = config === undefined ? {} : config;
+
+        if (!config.noFill) {
+            this.context.fillRect(x, y, w, h);
+        }
+
+        if (!config.noStroke) {
+            this.context.strokeRect(x, y, w, h);
+        }
     }
 }
