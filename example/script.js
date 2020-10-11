@@ -12,15 +12,11 @@ window.addEventListener("load", () => {
             canvas.startLoop();
         },
         "onDraw": (canvas, deltaTime) => {
-            time += deltaTime;
-            if (time >= 5) {
-                canvas.stopLoop();
-                console.log("Last Frame!");
-            }
-
             console.log("Frame Time: " + deltaTime);
-            canvas.context.fillStyle = "blue";
-            canvas.context.fillRect(10, 10, 100, 100);
+
+            canvas.background(0, 0, 0);
+            canvas.fill(0, 0, 255);
+            canvas.rect(0, 0, 100, 100, );
         }
     });
 });
