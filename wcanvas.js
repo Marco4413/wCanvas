@@ -23,7 +23,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export const version = "0.0.6";
+export const version = "0.0.7";
 
 let uuid = 0;
 export const generateUUID = () => { return uuid++; }
@@ -220,7 +220,7 @@ export class wcanvas {
      * @param {Number} b - Blue [0, 255]
      */
     stroke(r = 0, g = 0, b = 0) {
-        this.context.fillStyle = "rgb(" + [r, g, b].join(", ") + ")";
+        this.context.strokeStyle = "rgb(" + [r, g, b].join(", ") + ")";
     }
 
     /**
@@ -290,5 +290,24 @@ export class wcanvas {
         if (!config.noStroke) {
             this.context.stroke();
         }
+    }
+
+    /**
+     * Draws a line from x1, y1 to x2, y2
+     * @param {Number} x1 - The starting x coordinate 
+     * @param {Number} y1 - The starting y coordinate 
+     * @param {Number} x2 - The end x coordinate 
+     * @param {Number} y2 - The end y coordinate 
+     */
+    line(x1, y1, x2, y2, round = true) {
+        this.context.save();
+        this.context.lineCap = round ? "round" : "square";
+        
+        this.context.beginPath();
+        this.context.moveTo(x1, y1);
+        this.context.lineTo(x2, y2);
+        this.context.stroke();
+
+        this.context.restore();
     }
 }
