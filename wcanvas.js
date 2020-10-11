@@ -36,7 +36,7 @@ export const generateUUID = () => { return uuid++; }
  * @property {Number} height - The height of the canvas
  * @property {(canvas: wcanvas, window: Window, event: UIEvent) => {}} onResize - A callback that's called on window resize
  * @property {(canvas: wcanvas) => {}} onSetup - Function that gets called after the class was constructed
- * @property {(canvas: wcanvas) => {}} onDraw - Function that gets called every frame
+ * @property {(canvas: wcanvas, deltaTime: Number) => {}} onDraw - Function that gets called every frame
  * @property {Number} FPS - The targetted FPS (If negative it will draw every time the browser lets it)
  */
 
@@ -105,12 +105,50 @@ export class wcanvas {
         };
 
         /**
+         * @param {Number} deltaTime - Time elapsed from the last drawn frame
          * @param {...any} args - Arguments to be passed to draw function
          */
-        this.draw = (...args) => {
-            config.onDraw(this, ...args);
+        this.draw = (deltaTime, ...args) => {
+            config.onDraw(this, deltaTime, ...args);
         };
 
+        this.lastFrame = 0;
+        this.looping = false;
         this.setup();
+    }
+
+    /**
+     * Starts draw loop
+     */
+    startLoop() {
+        this.looping = true;
+
+        const callDraw = () => {
+            if (this.FPS !== 0) {
+                const newTimestamp = Date.now();
+                this.draw((newTimestamp - this.lastFrame) / 1_000);
+                this.lastFrame = newTimestamp;
+            }
+
+            if (!this.looping) {
+                return;
+            }
+
+            if (this.FPS <= 0) {
+                requestAnimationFrame(callDraw);
+            } else {
+                setTimeout(callDraw, 1 / this.FPS * 1_000);
+            }
+        };
+
+        this.lastFrame = Date.now();
+        callDraw();
+    }
+    
+    /**
+     * Stops draw loop
+     */
+    stopLoop() {
+        this.looping = false;
     }
 }
