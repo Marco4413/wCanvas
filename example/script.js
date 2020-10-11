@@ -1,4 +1,11 @@
 
 import * as wcanvas from "../wcanvas.js";
 
-console.log(wcanvas.version);
+window.addEventListener("load", () => {
+    console.log(wcanvas.version);
+
+    const wrappedCanvas = new wcanvas.wcanvas();
+
+    wrappedCanvas.context.fillStyle = "blue";
+    wrappedCanvas.context.fillRect(10, 10, 100, 100);
+});
