@@ -1,4 +1,4 @@
-Copyright (c) 2020 [hds536jhmk](https://github.com/hds536jhmk)
+Copyright (c) 2020 [hds536jhmk](https://github.com/hds536jhmk/wCanvas)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
