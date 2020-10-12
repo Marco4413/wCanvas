@@ -23,7 +23,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export const version = "0.1.1";
+export const version = "0.1.2";
 
 let uuid = 0;
 /**
@@ -49,26 +49,33 @@ export const formatString = (str = "", ...formats) => {
 
 /**
  * @typedef {Object} wCanvasConfig - wCanvas's config
- * @property {String} id - The id of the canvas you want to wrap
- * @property {HTMLCanvasElement} canvas - The canvas you want to wrap
- * @property {Number} width - The width of the canvas
- * @property {Number} height - The height of the canvas
- * @property {(canvas: wCanvas, window: Window, event: UIEvent) => {}} onResize - A callback that's called on window resize
- * @property {(canvas: wCanvas) => {}} onSetup - Function that gets called after the class was constructed
- * @property {(canvas: wCanvas, deltaTime: Number) => {}} onDraw - Function that gets called every frame
- * @property {Number} FPS - The targetted FPS (If negative it will draw every time the browser lets it)
+ * @property {String} [id] - The id of the canvas you want to wrap
+ * @property {HTMLCanvasElement} [canvas] - The canvas you want to wrap
+ * @property {Number} [width] - The width of the canvas
+ * @property {Number} [height] - The height of the canvas
+ * @property {(canvas: wCanvas, window: Window, event: UIEvent) => {}} [onResize] - A callback that's called on window resize
+ * @property {(canvas: wCanvas) => {}} [onSetup] - Function that gets called after the class was constructed
+ * @property {(canvas: wCanvas, deltaTime: Number) => {}} [onDraw] - Function that gets called every frame
+ * @property {Number} [FPS] - The targetted FPS (If negative it will draw every time the browser lets it)
  */
 
 /**
  * @typedef {Object} ShapeConfig - Shapes' config
- * @property {Boolean} noStroke - Whether or not stroke should be applied
- * @property {Boolean} noFill - Whether or not the shape should be filled
+ * @property {Boolean} [noStroke] - Whether or not stroke should be applied
+ * @property {Boolean} [noFill] - Whether or not the shape should be filled
+ */
+
+/**
+ * @typedef {Object} __PathSpecificConfig
+ * @property {Boolean} [round] - Whether or not corners should be round
+ * 
+ * @typedef {ShapeConfig & __PathSpecificConfig} PathConfig - Paths' config
  */
 
 /**
  * @typedef {Object} __TextSpecificConfig
- * @property {Number} maxWidth - Text's max width
- * @property {Boolean} returnWidth - Whether or not to return text's width after it was drawn
+ * @property {Number} [maxWidth] - Text's max width
+ * @property {Boolean} [returnWidth] - Whether or not to return text's width after it was drawn
  * 
  * @typedef {ShapeConfig & __TextSpecificConfig} TextConfig - Texts' config
  */
@@ -167,18 +174,26 @@ export class wCanvas {
         this.FPS = config.FPS === undefined ? -1 : config.FPS;
 
         /**
+         * Calls the specified setup function from the config (If not function is found then it will start draw loop automatically)
          * @param {...any} args - Arguments to be passed to setup function
          */
         this.setup = (...args) => {
-            config.onSetup(this, ...args);
+            if (config.onSetup) {
+                config.onSetup(this, ...args);
+            } else {
+                this.startLoop();
+            }
         };
 
         /**
+         * Calls the specified draw function from the config
          * @param {Number} deltaTime - Time elapsed from the last drawn frame
          * @param {...any} args - Arguments to be passed to draw function
          */
         this.draw = (deltaTime, ...args) => {
-            config.onDraw(this, deltaTime, ...args);
+            if (config.onDraw) {
+                config.onDraw(this, deltaTime, ...args);
+            }
         };
 
         this.lastFrame = 0;
@@ -187,9 +202,14 @@ export class wCanvas {
     }
 
     /**
-     * Starts draw loop
+     * Starts draw loop (Doesn't do that if one was already started)
      */
     startLoop() {
+        // If it's already looping then nothing should be done
+        if (this.looping) {
+            return;
+        }
+
         this.looping = true;
 
         const callDraw = () => {
@@ -227,7 +247,7 @@ export class wCanvas {
 
     /**
      * Saves canvas context to be restored at a later date
-     * @param {Number} n - How many times the context should be saved
+     * @param {Number} [n] - How many times the context should be saved
      */
     save(n) {
         if (n) {
@@ -241,7 +261,7 @@ export class wCanvas {
 
     /**
      * Restores canvas context from last save
-     * @param {Number} n - How many times the context should be restored
+     * @param {Number} [n] - How many times the context should be restored
      */
     restore(n) {
         if (n) {
@@ -390,9 +410,10 @@ export class wCanvas {
      * @param {Number} y1 - The starting y coordinate 
      * @param {Number} x2 - The end x coordinate 
      * @param {Number} y2 - The end y coordinate 
+     * @param {Boolean} round - Whether or not line ends should be rounded
      */
     line(x1, y1, x2, y2, round = true) {
-        this.context.save();
+        const oldLineCap = this.context.lineCap;
         this.context.lineCap = round ? "round" : "square";
         
         this.context.beginPath();
@@ -400,15 +421,15 @@ export class wCanvas {
         this.context.lineTo(x2, y2);
         this.context.stroke();
 
-        this.context.restore();
+        this.context.lineCap = oldLineCap;
     }
 
     /**
-     * Draws a shape from the specified vertices
+     * Draws a shape using the specified vertices (Tries to draw only if there are 2 or more vertices specified)
      * @param {Array<Array<Number>>} vertices - Array of Vertices (A vertex is this kind of array [x, y])
-     * @param {ShapeConfig} config - Other options
+     * @param {PathConfig} config - Other options
      */
-    shape(vertices, config = {}) {
+    path(vertices, config = {}) {
         if (vertices.length <= 1) {
             return;
         }
@@ -430,7 +451,12 @@ export class wCanvas {
         }
 
         if (!config.noStroke) {
+            const oldLineJoin = this.context.lineJoin;
+            this.context.lineJoin = config.round || config.round === undefined ? "round" : "miter";
+
             this.context.stroke();
+            
+            this.context.lineJoin = oldLineJoin;
         }
     }
 
@@ -457,12 +483,12 @@ export class wCanvas {
      * @param {TextConfig} config - Other options
      * @returns {undefined|Number} If config.returnWidth is true it returns text's width
      */
-    text(text, x, y, config = { "noStroke": true }) {
+    text(text, x, y, config = {}) {
         if (!config.noFill) {
             this.context.fillText(text, x, y, config.maxWidth);
         }
 
-        if (!config.noStroke) {
+        if (!(config.noStroke || config.noStroke === undefined)) {
             this.context.strokeText(text, x, y, config.maxWidth);
         }
 
