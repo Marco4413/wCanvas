@@ -1,6 +1,7 @@
 /**
  * @file A Canvas Wrapper for JavaScript
- * @author hds536jhmk {@link https://github.com/hds536jhmk}
+ * @author
+ * hds536jhmk <{@link https://github.com/hds536jhmk}>
  * @license
  * Copyright (c) 2020 hds536jhmk ({@link https://github.com/hds536jhmk/wCanvas})
  * 
