@@ -173,6 +173,7 @@ export class wCanvas {
     /**
      * The time at which the last frame was drawn
      * @field
+     * @readonly
      * @type {Number}
      */
     lastFrame;
