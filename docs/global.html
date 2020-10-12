@@ -196,7 +196,7 @@
     
 
     
-    <h4 class="name" id="formatString"><span class="type-signature"></span>formatString<span class="signature">(str, &hellip;formats)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="formatString"><span class="type-signature"></span>formatString<span class="signature">(str, &hellip;formats<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
 
     
@@ -240,7 +240,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line50">line 50</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -335,6 +335,8 @@
             
                 <td class="attributes">
                 
+                    &lt;optional><br>
+                
 
                 
 
@@ -399,6 +401,13 @@
 
 
 
+
+<div class="section-examples">
+<h5>Example</h5>
+
+    <pre class="prettyprint"><code>formatString("const {0} = {1};", "variableName", "value") => "const variableName = value;"</code></pre>
+
+</div>
 
 </div>
         
@@ -696,7 +705,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line96">line 96</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line100">line 100</a>
     </li></ul></dd>
     
 
@@ -867,7 +876,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line90">line 90</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line94">line 94</a>
     </li></ul></dd>
     
 
@@ -1104,7 +1113,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line103">line 103</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line107">line 107</a>
     </li></ul></dd>
     
 
@@ -1315,7 +1324,7 @@
             <td class="type">
             
                 
-<span class="param-type"><code><a href="global.html#wCanvasConfig_onResize">wCanvasConfig_onResize</a></code></span>
+<span class="param-type"><code><a href="global.html#wCanvasConfig-onResize">wCanvasConfig-onResize</a></code></span>
 
 
             
@@ -1348,7 +1357,7 @@
             <td class="type">
             
                 
-<span class="param-type"><code><a href="global.html#wCanvasConfig_onSetup">wCanvasConfig_onSetup</a></code></span>
+<span class="param-type"><code><a href="global.html#wCanvasConfig-onSetup">wCanvasConfig-onSetup</a></code></span>
 
 
             
@@ -1381,7 +1390,7 @@
             <td class="type">
             
                 
-<span class="param-type"><code><a href="global.html#wCanvasConfig_onDraw">wCanvasConfig_onDraw</a></code></span>
+<span class="param-type"><code><a href="global.html#wCanvasConfig-onDraw">wCanvasConfig-onDraw</a></code></span>
 
 
             
@@ -1473,7 +1482,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line78">line 78</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line82">line 82</a>
     </li></ul></dd>
     
 
@@ -1509,7 +1518,7 @@
     
 
     
-    <h4 class="name" id="wCanvasConfig_onDraw"><span class="type-signature"></span>wCanvasConfig_onDraw<span class="signature">(canvas, deltaTime)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="wCanvasConfig-onDraw"><span class="type-signature"></span>wCanvasConfig-onDraw<span class="signature">(canvas, deltaTime)</span><span class="type-signature"> &rarr; {undefined}</span></h4>
     
 
     
@@ -1549,7 +1558,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line72">line 72</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line75">line 75</a>
     </li></ul></dd>
     
 
@@ -1660,6 +1669,27 @@
 
 
 
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>undefined</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
 
 
 
@@ -1672,7 +1702,7 @@
     
 
     
-    <h4 class="name" id="wCanvasConfig_onResize"><span class="type-signature"></span>wCanvasConfig_onResize<span class="signature">(canvas, window, event)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="wCanvasConfig-onResize"><span class="type-signature"></span>wCanvasConfig-onResize<span class="signature">(canvas, window, event)</span><span class="type-signature"> &rarr; {undefined}</span></h4>
     
 
     
@@ -1712,7 +1742,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line60">line 60</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line61">line 61</a>
     </li></ul></dd>
     
 
@@ -1849,6 +1879,27 @@
 
 
 
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>undefined</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
 
 
 
@@ -1861,7 +1912,7 @@
     
 
     
-    <h4 class="name" id="wCanvasConfig_onSetup"><span class="type-signature"></span>wCanvasConfig_onSetup<span class="signature">(canvas)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="wCanvasConfig-onSetup"><span class="type-signature"></span>wCanvasConfig-onSetup<span class="signature">(canvas)</span><span class="type-signature"> &rarr; {undefined}</span></h4>
     
 
     
@@ -1901,7 +1952,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line67">line 67</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line69">line 69</a>
     </li></ul></dd>
     
 
@@ -1986,6 +2037,27 @@
 
 
 
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>undefined</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
 
 
 
@@ -2007,7 +2079,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Mon Oct 12 2020 22:02:48 GMT+0200 (GMT+02:00) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Mon Oct 12 2020 22:36:21 GMT+0200 (GMT+02:00) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
