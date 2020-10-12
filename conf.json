@@ -1,0 +1,29 @@
+{
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": [
+            "jsdoc", "closure"
+        ]
+    },
+    "source": {
+        "include": [
+            "./README.md", "./wcanvas.js"
+        ]
+    },
+    "plugins": [
+        "plugins/markdown"
+    ],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": true,
+        "useLongnameInNav": false,
+        "showInheritedInNav": true
+    },
+    "opts": {
+        "template": "./minami",
+        "encoding": "utf8",
+        "destination": "./docs/",
+        "private": true,
+        "recurse": false
+    }
+}
