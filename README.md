@@ -28,4 +28,8 @@ window.addEventListener("load", () => {
 
 ### Is there a documentation available?
 
-Sure, you can check it out at https://hds536jhmk.github.io/wCanvas/docs/
+<!---
+    Using an hyperlink with the same name as the URL
+    to make JSDoc understand that it should be clickable
+-->
+Sure, you can check it out at [https://hds536jhmk.github.io/wCanvas/docs/](https://hds536jhmk.github.io/wCanvas/docs/)
