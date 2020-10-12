@@ -1,3 +1,3 @@
 
 @echo off
-jsdoc -c ./conf.json
+jsdoc --verbose -c ./conf.json
