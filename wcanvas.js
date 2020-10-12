@@ -59,7 +59,7 @@ export const formatString = (str, ...formats) => {
 }
 
 /**
- * @callback wCanvasConfig-onResize - Function that gets called on window resize
+ * @callback wCanvasConfig_onResize - Function that gets called on window resize
  * @param {wCanvas} canvas - The canvas it's attached to
  * @param {Window} window - The new window
  * @param {UIEvent} event - The event that triggered this call
@@ -67,13 +67,13 @@ export const formatString = (str, ...formats) => {
  */
 
 /**
- * @callback wCanvasConfig-onSetup - Function that gets called after the class was constructed
+ * @callback wCanvasConfig_onSetup - Function that gets called after the class was constructed
  * @param {wCanvas} canvas - The canvas it's attached to
  * @returns {undefined}
  */
 
 /**
- * @callback wCanvasConfig-onDraw - Function that gets called every frame
+ * @callback wCanvasConfig_onDraw - Function that gets called every frame
  * @param {wCanvas} canvas - The canvas it's attached to
  * @param {Number} deltaTime - The time elapsed between frames in seconds
  * @returns {undefined}
@@ -85,9 +85,9 @@ export const formatString = (str, ...formats) => {
  * @property {HTMLCanvasElement} [canvas] - The canvas you want to wrap
  * @property {Number} [width] - The width of the canvas
  * @property {Number} [height] - The height of the canvas
- * @property {wCanvasConfig-onResize} [onResize]
- * @property {wCanvasConfig-onSetup} [onSetup]
- * @property {wCanvasConfig-onDraw} [onDraw]
+ * @property {wCanvasConfig_onResize} [onResize]
+ * @property {wCanvasConfig_onSetup} [onSetup]
+ * @property {wCanvasConfig_onDraw} [onDraw]
  * @property {Number} [FPS] - The targetted FPS (If negative it will draw every time the browser lets it)
  */
 
