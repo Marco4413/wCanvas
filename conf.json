@@ -13,6 +13,11 @@
     "plugins": [
         "plugins/markdown"
     ],
+    "markdown": {
+        "tags": [
+            "author", "license"
+        ]
+    },
     "templates": {
         "cleverLinks": false,
         "monospaceLinks": true,
