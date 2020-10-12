@@ -30,7 +30,7 @@
  * The version of the library
  * @type {String}
  */
-export const version = "0.1.2";
+export const version = "0.1.3";
 
 let uuid = 0;
 /**
@@ -43,11 +43,12 @@ export const generateUUID = () => { return uuid++; }
 /**
  * Formats a string by replacing `{i}` with `formats[i]`
  * @function
+ * @example formatString("const {0} = {1};", "variableName", "value") => "const variableName = value;"
  * @param {String} str - The string to format
- * @param {...any} formats - The things to replace `{i}` with
+ * @param {...any} [formats] - The things to replace `{i}` with
  * @returns {String} The formatted string
  */
-export const formatString = (str = "", ...formats) => {
+export const formatString = (str, ...formats) => {
     formats.forEach(
         (format, i) => {
             str = str.replace("{" + i + "}", String(format));
@@ -58,21 +59,24 @@ export const formatString = (str = "", ...formats) => {
 }
 
 /**
- * @callback wCanvasConfig_onResize - Function that gets called on window resize
+ * @callback wCanvasConfig-onResize - Function that gets called on window resize
  * @param {wCanvas} canvas - The canvas it's attached to
  * @param {Window} window - The new window
  * @param {UIEvent} event - The event that triggered this call
+ * @returns {undefined}
  */
 
 /**
- * @callback wCanvasConfig_onSetup - Function that gets called after the class was constructed
+ * @callback wCanvasConfig-onSetup - Function that gets called after the class was constructed
  * @param {wCanvas} canvas - The canvas it's attached to
+ * @returns {undefined}
  */
 
 /**
- * @callback wCanvasConfig_onDraw - Function that gets called every frame
+ * @callback wCanvasConfig-onDraw - Function that gets called every frame
  * @param {wCanvas} canvas - The canvas it's attached to
  * @param {Number} deltaTime - The time elapsed between frames in seconds
+ * @returns {undefined}
  */
 
 /**
@@ -81,9 +85,9 @@ export const formatString = (str = "", ...formats) => {
  * @property {HTMLCanvasElement} [canvas] - The canvas you want to wrap
  * @property {Number} [width] - The width of the canvas
  * @property {Number} [height] - The height of the canvas
- * @property {wCanvasConfig_onResize} [onResize]
- * @property {wCanvasConfig_onSetup} [onSetup]
- * @property {wCanvasConfig_onDraw} [onDraw]
+ * @property {wCanvasConfig-onResize} [onResize]
+ * @property {wCanvasConfig-onSetup} [onSetup]
+ * @property {wCanvasConfig-onDraw} [onDraw]
  * @property {Number} [FPS] - The targetted FPS (If negative it will draw every time the browser lets it)
  */
 
@@ -133,9 +137,9 @@ export class Font {
     attributes;
 
     /**
-     * @param {String} fontFamily - The Font Family to use
-     * @param {Number} fontSize - The size of the font
-     * @param {...String} attributes - All the extra CSS Attributes for the font
+     * @param {String} [fontFamily] - The Font Family to use
+     * @param {Number} [fontSize] - The size of the font
+     * @param {...String} [attributes] - All the extra CSS Attributes for the font
      */
     constructor(fontFamily = "Arial", fontSize = 12, ...attributes) {
         this.fontFamily = fontFamily;
@@ -237,8 +241,9 @@ export class wCanvas {
         this.FPS = config.FPS === undefined ? -1 : config.FPS;
 
         /**
-         * Calls the specified setup function from the config (If not function is found then it will start draw loop automatically)
-         * @param {...any} args - Arguments to be passed to setup function
+         * Calls the specified setup function from the config (If no function is found then it will start draw loop automatically)
+         * @param {...any} [args] - Arguments to be passed to setup function
+         * @returns {undefined}
          */
         this.setup = (...args) => {
             if (config.onSetup) {
@@ -251,7 +256,8 @@ export class wCanvas {
         /**
          * Calls the specified draw function from the config
          * @param {Number} deltaTime - Time elapsed from the last drawn frame
-         * @param {...any} args - Arguments to be passed to draw function
+         * @param {...any} [args] - Arguments to be passed to draw function
+         * @returns {undefined}
          */
         this.draw = (deltaTime, ...args) => {
             if (config.onDraw) {
@@ -267,6 +273,7 @@ export class wCanvas {
     /**
      * Starts draw loop (Doesn't do that if one was already started)
      * @method
+     * @returns {undefined}
      */
     startLoop() {
         // If it's already looping then nothing should be done
@@ -305,6 +312,7 @@ export class wCanvas {
     /**
      * Stops draw loop
      * @method
+     * @returns {undefined}
      */
     stopLoop() {
         this.looping = false;
@@ -314,6 +322,7 @@ export class wCanvas {
      * Saves canvas context to be restored at a later date
      * @method
      * @param {Number} [n] - How many times the context should be saved
+     * @returns {undefined}
      */
     save(n) {
         if (n) {
@@ -329,6 +338,7 @@ export class wCanvas {
      * Restores canvas context from last save
      * @method
      * @param {Number} [n] - How many times the context should be restored
+     * @returns {undefined}
      */
     restore(n) {
         if (n) {
@@ -345,6 +355,7 @@ export class wCanvas {
      * @method
      * @param {Number} [x] - X translation
      * @param {Number} [y] - Y translation
+     * @returns {undefined}
      */
     translate(x = 0, y = 0) {
         this.context.translate(x, y);
@@ -354,6 +365,7 @@ export class wCanvas {
      * Rotates every next shape by the specified angle in radians
      * @method
      * @param {Number} [angle] - Angle in radians
+     * @returns {undefined}
      */
     rotate(angle = 0) {
         this.context.rotate(angle);
@@ -364,6 +376,7 @@ export class wCanvas {
      * @method
      * @param {Number} [x] - Horizontal Scale
      * @param {Number} [y] - Vertical Scale
+     * @returns {undefined}
      */
     scale(x = 1, y = 1) {
         this.context.scale(x, y);
@@ -375,6 +388,7 @@ export class wCanvas {
      * @param {Number} [r] - Red [0, 255]
      * @param {Number} [g] - Green [0, 255]
      * @param {Number} [b] - Blue [0, 255]
+     * @returns {undefined}
      */
     background(r = 0, g = 0, b = 0) {
         this.context.save();
@@ -392,6 +406,7 @@ export class wCanvas {
      * @param {Number} [r] - Red [0, 255]
      * @param {Number} [g] - Green [0, 255]
      * @param {Number} [b] - Blue [0, 255]
+     * @returns {undefined}
      */
     fill(r = 255, g = 255, b = 255) {
         this.context.fillStyle = "rgb(" + [r, g, b].join(", ") + ")";
@@ -403,6 +418,7 @@ export class wCanvas {
      * @param {Number} [r] - Red [0, 255]
      * @param {Number} [g] - Green [0, 255]
      * @param {Number} [b] - Blue [0, 255]
+     * @returns {undefined}
      */
     stroke(r = 0, g = 0, b = 0) {
         this.context.strokeStyle = "rgb(" + [r, g, b].join(", ") + ")";
@@ -412,6 +428,7 @@ export class wCanvas {
      * Changes stroke diameter
      * @method
      * @param {Number} [d] - The diameter of the stroke
+     * @returns {undefined}
      */
     strokeWeigth(d = 1) {
         this.context.lineWidth = d;
@@ -425,6 +442,7 @@ export class wCanvas {
      * @param {Number} w - The width of the rectangle
      * @param {Number} h - The height of the rectangle
      * @param {ShapeConfig} [config] - Other options
+     * @returns {undefined}
      */
     rect(x, y, w, h, config = {}) {
         if (!config.noFill) {
@@ -443,6 +461,7 @@ export class wCanvas {
      * @param {Number} y - The y coordinate where the circle should be drawn
      * @param {Number} r - The radius of the circle
      * @param {ShapeConfig} [config] - Other options
+     * @returns {undefined}
      */
     circle(x, y, r, config = {}) {
         this.context.beginPath();
@@ -466,6 +485,7 @@ export class wCanvas {
      * @param {Number} rX - The radius on the x axis of the ellipse
      * @param {Number} [rY] - The radius on the y axis of the ellipse
      * @param {ShapeConfig} [config] - Other options
+     * @returns {undefined}
      */
     ellipse(x, y, rX, rY = rX, config = {}) {
         this.context.beginPath();
@@ -489,6 +509,7 @@ export class wCanvas {
      * @param {Number} x2 - The end x coordinate 
      * @param {Number} y2 - The end y coordinate 
      * @param {Boolean} [round] - Whether or not line ends should be rounded
+     * @returns {undefined}
      */
     line(x1, y1, x2, y2, round = true) {
         const oldLineCap = this.context.lineCap;
@@ -507,6 +528,7 @@ export class wCanvas {
      * @method
      * @param {Array<Array<Number>>} vertices - Array of Vertices (A vertex is this kind of array [x, y])
      * @param {PathConfig} [config] - Other options
+     * @returns {undefined}
      */
     path(vertices, config = {}) {
         if (vertices.length <= 1) {
@@ -543,6 +565,7 @@ export class wCanvas {
      * Changes font
      * @method
      * @param {Font} [font] - The new font to use
+     * @returns {undefined}
      */
     textFont(font = new Font()) {
         this.context.font = font.toCSSProperty();
@@ -552,6 +575,7 @@ export class wCanvas {
      * Changes font's size
      * @method
      * @param {Number} [size] - The new size for the font
+     * @returns {undefined}
      */
     textSize(size = 12) {
         this.context.font = this.context.font.replace(/\d+px/g, String(size) + "px");
@@ -564,7 +588,7 @@ export class wCanvas {
      * @param {Number} x - The x coordinate where the text should be drawn
      * @param {Number} y - The y coordinate where the text should be drawn
      * @param {TextConfig} [config] - Other options
-     * @returns {undefined|Number} If config.returnWidth is true it returns text's width
+     * @returns {undefined|Number} If config.returnWidth is true it returns the text's width
      */
     text(text, x, y, config = {}) {
         if (!config.noFill) {
