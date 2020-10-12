@@ -34,10 +34,10 @@ window.addEventListener("load", () => {
             canvas.textSize(20);
             const textWidth = canvas.text(
                 "This is a cool text", 100, 100,
-                { "noStroke": true, "returnWidth": true }
+                { "returnWidth": true }
             );
 
-            canvas.shape(
+            canvas.path(
                 [[100, 100],
                  [100 + textWidth, 100],
                  [100 + textWidth / 2, 200]],
