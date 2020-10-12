@@ -21,9 +21,6 @@ import { wCanvas } from "wcanvas.js";
 
 window.addEventListener("load", () => {
     const wrappedCanvas = new wCanvas({
-        "onSetup": (canvas) => {
-            canvas.startLoop();
-        },
         "onDraw": (canvas, deltaTime) => { }
     });
 });
