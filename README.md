@@ -25,3 +25,7 @@ window.addEventListener("load", () => {
     });
 });
 ```
+
+### Is there a documentation available?
+
+Sure, you can check it out at https://hds536jhmk.github.io/wCanvas/docs/
