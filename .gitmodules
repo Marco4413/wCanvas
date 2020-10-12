@@ -1,0 +1,3 @@
+[submodule "minami"]
+	path = minami
+	url = https://github.com/Nijikokun/minami
