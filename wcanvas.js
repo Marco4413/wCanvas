@@ -31,7 +31,7 @@
  * The version of the library
  * @type {String}
  */
-export const version = "0.1.3";
+export const version = "0.1.4";
 
 let uuid = 0;
 /**
@@ -381,6 +381,15 @@ export class wCanvas {
      */
     scale(x = 1, y = 1) {
         this.context.scale(x, y);
+    }
+
+    /**
+     * Clears the whole canvas
+     * @method
+     * @returns {undefined}
+     */
+    clear() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     /**
