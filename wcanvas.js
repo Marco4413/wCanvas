@@ -31,7 +31,7 @@
  * The version of the library
  * @type {String}
  */
-export const version = "0.1.4";
+export const version = "0.1.5";
 
 let uuid = 0;
 /**
@@ -81,14 +81,15 @@ export const formatString = (str, ...formats) => {
  */
 
 /**
+ * **CBCL**: "Can be changed later" means that a field of the config can be changed and it will have an effect on the {@link wCanvas} it's bound to
  * @typedef {Object} wCanvasConfig - wCanvas's config
  * @property {String} [id] - The id of the canvas you want to wrap
  * @property {HTMLCanvasElement} [canvas] - The canvas you want to wrap
- * @property {Number} [width] - The width of the canvas
- * @property {Number} [height] - The height of the canvas
- * @property {wCanvasConfig_onResize} [onResize]
- * @property {wCanvasConfig_onSetup} [onSetup]
- * @property {wCanvasConfig_onDraw} [onDraw]
+ * @property {Number} [width] - **CBCL** (Reapplied only on resize) The width of the canvas
+ * @property {Number} [height] - **CBCL** (Reapplied only on resize) The height of the canvas
+ * @property {wCanvasConfig_onResize} [onResize] - **CBCL**
+ * @property {wCanvasConfig_onSetup} [onSetup] - **CBCL**
+ * @property {wCanvasConfig_onDraw} [onDraw] - **CBCL**
  * @property {Number} [FPS] - The targetted FPS (If negative it will draw every time the browser lets it)
  */
 
@@ -114,7 +115,7 @@ export const formatString = (str, ...formats) => {
  */
 
  /**
-  * Stores font informations (To be used with {@link wCanvas})
+  * Stores font informations (To be used with {@link wCanvas#textFont})
   * @class
   */
 export class Font {
@@ -159,22 +160,46 @@ export class Font {
 }
 
 /**
+ * Error given when a Canvas ID is invalid
+ * @class
+ * @extends {Error}
+ */
+export class InvalidCanvasIDException extends Error {
+    /**
+     * @constructor
+     * @param {String} id - The id that generated this error
+     */
+    constructor(id) {
+        super(formatString("No canvas with ID \"{0}\" was found!", id));
+        this.name = "InvalidCanvasIDException";
+    }
+}
+
+/**
  * Wraps a Canvas and provides useful functions
  * @class
  */
 export class wCanvas {
     /**
-     * The target FPS of the canvas
+     * The target FPS of the canvas (If it's a negative value it will try to draw every time it's possible)
      * @field
      * @type {Number}
      */
     FPS;
     /**
-     * he canvas that is currently wrapped
+     * The canvas that is currently wrapped
      * @field
+     * @constant
      * @type {HTMLCanvasElement} 
      */
     canvas;
+    /**
+     * The 2D drawing context of {@link wCanvas#canvas}
+     * @field
+     * @constant
+     * @type {CanvasRenderingContext2D}
+     */
+    context;
     /**
      * The time at which the last frame was drawn
      * @field
@@ -183,7 +208,7 @@ export class wCanvas {
      */
     lastFrame;
     /**
-     * Whether or not this is running a draw loop (Should only be read)
+     * Whether or not this is running a draw loop
      * @field
      * @readonly
      * @type {Boolean}
@@ -193,10 +218,11 @@ export class wCanvas {
     /**
      * @constructor
      * @param {wCanvasConfig} [config] - The config to create the wCanvas with
+     * @throws {InvalidCanvasIDException}
      */
     constructor(config = {}) {
         // Check if a Canvas was specified
-        if (config.canvas === undefined) {
+        if (config.canvas === undefined || config.canvas === null) {
             // Check if an ID was specified
             if (config.id === undefined) {
                 // If no ID was given then create a new canvas using an UUID
@@ -206,6 +232,9 @@ export class wCanvas {
             } else {
                 // Get the canvas with the given ID
                 this.canvas = document.getElementById(config.id);
+                if (this.canvas === null) {
+                    throw new InvalidCanvasIDException(config.id);
+                }
             }
         } else {
             // Use the specified canvas
@@ -215,28 +244,31 @@ export class wCanvas {
         // Get the context of the created Canvas
         this.context = this.canvas.getContext("2d");
 
-        // If a width and a height were given then set canvas's width and height to them
-        if (config.width !== undefined && config.height !== undefined) {
-            this.canvas.width = config.width;
-            this.canvas.height = config.height;
-        }
 
-        // Check if resize callback was given
-        if (config.onResize === undefined) {
-            // If it wasn't given then make the canvas always resize to be fullscreen
-            const onResize = () => {
+        const defaultResize = () => {
+            // If a width and a height were given then use them as the width and height
+            if (config.width !== undefined && config.height !== undefined) {
+                this.canvas.width = config.width;
+                this.canvas.height = config.height;
+            } else {
+                // Otherwise make the canvas fullscreen
                 this.canvas.width = window.innerWidth + 1;
                 this.canvas.height = window.innerHeight + 1;
             }
-
-            window.addEventListener("resize", onResize);
-            onResize();
-        } else {
-            // If it was add it to the window's event listener
-            window.addEventListener("resize", (window, event) => {
-                config.onResize(this, window, event);
-            });
         }
+        defaultResize();
+
+        // Add an event listener to the resize event
+        window.addEventListener("resize", (...args) => {
+            // If the user specified a callback on window resize
+            if (config.onResize === undefined) {
+                // Call the default resize function
+                defaultResize();
+            } else {
+                // Call the user-specified callback
+                config.onResize(this, ...args);
+            }
+        });
 
         // A negative number of FPS means "Draw every time the browser lets you"
         this.FPS = config.FPS === undefined ? -1 : config.FPS;
