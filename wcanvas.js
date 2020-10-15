@@ -29,9 +29,10 @@
 
 /**
  * The version of the library
+ * @constant
  * @type {String}
  */
-export const version = "0.1.5";
+export const version = "0.1.6";
 
 let uuid = 0;
 /**
@@ -139,6 +140,8 @@ export class Font {
     attributes;
 
     /**
+     * @constructor
+     * @default
      * @param {String} [fontFamily] - The Font Family to use
      * @param {Number} [fontSize] - The size of the font
      * @param {...String} [attributes] - All the extra CSS Attributes for the font
@@ -353,12 +356,14 @@ export class wCanvas {
 
     /**
      * Saves canvas context to be restored at a later date
+     * (Using `{@link wCanvas#context}#save` is better if you don't need to save the context multiple times)
      * @method
+     * @default
      * @param {Number} [n] - How many times the context should be saved
      * @returns {undefined}
      */
-    save(n) {
-        if (n) {
+    save(n = 1) {
+        if (n > 1) {
             for (let i = 0; i < n; i++) {
                 this.context.save();
             }
@@ -369,12 +374,14 @@ export class wCanvas {
 
     /**
      * Restores canvas context from last save
+     * (Using `{@link wCanvas#context}#restore` is better if you don't need to restore the context multiple times)
      * @method
+     * @default
      * @param {Number} [n] - How many times the context should be restored
      * @returns {undefined}
      */
-    restore(n) {
-        if (n) {
+    restore(n = 1) {
+        if (n > 1) {
             for (let i = 0; i < n; i++) {
                 this.context.restore();
             }
@@ -385,7 +392,9 @@ export class wCanvas {
 
     /**
      * Translates every next shape by the specified offset
+     * (Using `{@link wCanvas#context}#translate` is better if you don't need the default values)
      * @method
+     * @default
      * @param {Number} [x] - X translation
      * @param {Number} [y] - Y translation
      * @returns {undefined}
@@ -396,7 +405,9 @@ export class wCanvas {
     
     /**
      * Rotates every next shape by the specified angle in radians
+     * (Using `{@link wCanvas#context}#rotate` is better if you don't need the default values)
      * @method
+     * @default
      * @param {Number} [angle] - Angle in radians
      * @returns {undefined}
      */
@@ -406,7 +417,9 @@ export class wCanvas {
 
     /**
      * Scales every next shape by the specified values
+     * (Using `{@link wCanvas#context}#scale` is better if you don't need the default values)
      * @method
+     * @default
      * @param {Number} [x] - Horizontal Scale
      * @param {Number} [y] - Vertical Scale
      * @returns {undefined}
@@ -425,8 +438,9 @@ export class wCanvas {
     }
 
     /**
-     * Draws a rectangle that fills the entire canvas
+     * Draws a rectangle that fills the entire canvas using the specified color
      * @method
+     * @default
      * @param {Number} [r] - Red [0, 255]
      * @param {Number} [g] - Green [0, 255]
      * @param {Number} [b] - Blue [0, 255]
@@ -443,8 +457,26 @@ export class wCanvas {
     }
 
     /**
+     * Draws a rectangle that fills the entire canvas using the specified CSS color
+     * @method
+     * @default
+     * @param {CanvasFillStrokeStyles} [color] - A CSS valid color
+     * @returns {undefined}
+     */
+    backgroundCSS(color = "black") {
+        this.context.save();
+        
+        this.context.resetTransform();
+        this.context.fillStyle = color;
+        this.rect(0, 0, this.canvas.width, this.canvas.height, { "noStroke": true });
+        
+        this.context.restore();
+    }
+
+    /**
      * Sets the color to be used to fill shapes
      * @method
+     * @default
      * @param {Number} [r] - Red [0, 255]
      * @param {Number} [g] - Green [0, 255]
      * @param {Number} [b] - Blue [0, 255]
@@ -455,8 +487,21 @@ export class wCanvas {
     }
 
     /**
+     * Sets the color to be used to fill shapes using a CSS color
+     * (Setting `{@link wCanvas#context}#fillStyle` is better if you don't need the default values)
+     * @method
+     * @default
+     * @param {CanvasFillStrokeStyles} [color] - A CSS valid color
+     * @returns {undefined}
+     */
+    fillCSS(color = "white") {
+        this.context.fillStyle = color;
+    }
+
+    /**
      * Sets the color to be used for shapes contours
      * @method
+     * @default
      * @param {Number} [r] - Red [0, 255]
      * @param {Number} [g] - Green [0, 255]
      * @param {Number} [b] - Blue [0, 255]
@@ -467,8 +512,22 @@ export class wCanvas {
     }
 
     /**
-     * Changes stroke diameter
+     * Sets the color to be used for shapes contours using a CSS color
+     * (Setting `{@link wCanvas#context}#strokeStyle` is better if you don't need the default values)
      * @method
+     * @default
+     * @param {CanvasFillStrokeStyles} [color] - A CSS valid color
+     * @returns {undefined}
+     */
+    strokeCSS(color = "black") {
+        this.context.strokeStyle = color;
+    }
+
+    /**
+     * Changes stroke diameter
+     * (Setting `{@link wCanvas#context}#lineWidth` is better if you don't need the default values)
+     * @method
+     * @default
      * @param {Number} [d] - The diameter of the stroke
      * @returns {undefined}
      */
@@ -546,6 +605,7 @@ export class wCanvas {
     /**
      * Draws a line from x1, y1 to x2, y2
      * @method
+     * @default
      * @param {Number} x1 - The starting x coordinate 
      * @param {Number} y1 - The starting y coordinate 
      * @param {Number} x2 - The end x coordinate 
@@ -616,6 +676,7 @@ export class wCanvas {
     /**
      * Changes font's size
      * @method
+     * @default
      * @param {Number} [size] - The new size for the font
      * @returns {undefined}
      */
