@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.1.6";
+export const version = "0.1.7";
 
 let uuid = 0;
 /**
@@ -396,10 +396,10 @@ export class wCanvas {
      * @method
      * @default
      * @param {Number} [x] - X translation
-     * @param {Number} [y] - Y translation
+     * @param {Number} [y] - Y translation (Same as X if `undefined`)
      * @returns {undefined}
      */
-    translate(x = 0, y = 0) {
+    translate(x = 0, y = x) {
         this.context.translate(x, y);
     }
     
@@ -421,10 +421,10 @@ export class wCanvas {
      * @method
      * @default
      * @param {Number} [x] - Horizontal Scale
-     * @param {Number} [y] - Vertical Scale
+     * @param {Number} [y] - Vertical Scale (Same as X if `undefined`)
      * @returns {undefined}
      */
-    scale(x = 1, y = 1) {
+    scale(x = 1, y = x) {
         this.context.scale(x, y);
     }
 
@@ -584,7 +584,7 @@ export class wCanvas {
      * @param {Number} x - The x coordinate where the ellipse should be drawn
      * @param {Number} y - The y coordinate where the ellipse should be drawn
      * @param {Number} rX - The radius on the x axis of the ellipse
-     * @param {Number} [rY] - The radius on the y axis of the ellipse
+     * @param {Number} [rY] - The radius on the y axis of the ellipse (Same as rX if `undefined`)
      * @param {ShapeConfig} [config] - Other options
      * @returns {undefined}
      */
