@@ -399,8 +399,8 @@ export class wCanvas {
      * @param {Number} [y] - Y translation (Same as X if `undefined`)
      * @returns {undefined}
      */
-    translate(x = 0, y = x) {
-        this.context.translate(x, y);
+    translate(x = 0, y) {
+        this.context.translate(x, y === undefined ? x : y);
     }
     
     /**
@@ -424,8 +424,8 @@ export class wCanvas {
      * @param {Number} [y] - Vertical Scale (Same as X if `undefined`)
      * @returns {undefined}
      */
-    scale(x = 1, y = x) {
-        this.context.scale(x, y);
+    scale(x = 1, y) {
+        this.context.scale(x, y === undefined ? x : y);
     }
 
     /**
@@ -588,10 +588,10 @@ export class wCanvas {
      * @param {ShapeConfig} [config] - Other options
      * @returns {undefined}
      */
-    ellipse(x, y, rX, rY = rX, config = {}) {
+    ellipse(x, y, rX, rY, config = {}) {
         this.context.beginPath();
 
-        this.context.ellipse(x, y, rX, rY, 0, 0, Math.PI * 2);
+        this.context.ellipse(x, y, rX, rY === undefined ? rX : rY, 0, 0, Math.PI * 2);
         
         if (!config.noFill) {
             this.context.fill();
