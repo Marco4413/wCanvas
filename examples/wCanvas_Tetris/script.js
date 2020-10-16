@@ -210,7 +210,7 @@ function drawShape(canvas, x, y, shape, color) {
 
                 canvas.fillCSS(color === undefined ? cellColor : color);
                 canvas.rect(
-                    (x + relX) * CELL_SIZE, (y + relY) * CELL_SIZE,
+                    x + relX * CELL_SIZE, y + relY * CELL_SIZE,
                     CELL_SIZE, CELL_SIZE
                 );
             }
@@ -256,7 +256,7 @@ class Tetromino {
      * @param {wCanvas} canvas - The canvas to draw the tetromino on
      */
     draw(canvas) {
-        drawShape(canvas, this.pos.x, this.pos.y, this.getCurrentShape());
+        drawShape(canvas, this.world.pos.x + this.pos.x * CELL_SIZE, this.world.pos.y + this.pos.y * CELL_SIZE, this.getCurrentShape());
     }
 
     /**
@@ -267,7 +267,7 @@ class Tetromino {
         const shape = this.getCurrentShape();
         for (let y = this.pos.y; y < this.world.height; y++) {
             if (!this.world.tetrominoFits(this, undefined, y)) {
-                drawShape(canvas, this.pos.x, y - 1, shape, SHADOW_COLOR);
+                drawShape(canvas, this.world.pos.x + this.pos.x * CELL_SIZE, this.world.pos.y + (y - 1) * CELL_SIZE, shape, SHADOW_COLOR);
                 break;
             }
         }
@@ -366,13 +366,14 @@ class World {
     grid;
 
     /**
-     * 
+     * @param {Point} pos - The origin of the world
      * @param {Number} w - The width of the world
      * @param {Number} h - The height of the world
      */
-    constructor(w, h) {
+    constructor(pos, w, h) {
         this.score = 0;
-
+        
+        this.pos = pos;
         this.width = w;
         this.height = h;
 
@@ -492,21 +493,28 @@ class World {
      * @param {wCanvas} canvas - The canvas to draw the world on
      */
     draw(canvas) {
-        for (let y = 0; y < this.grid.length; y++) {
-            const row = this.grid[y];
-            for (let x = 0; x < row.length; x++) {
-                const cellColor = row[x];
+        canvas.strokeCSS(SHAPE_BORDER_COLOR);
+
+        for (let relY = 0; relY < this.grid.length; relY++) {
+            const row = this.grid[relY];
+            for (let relX = 0; relX < row.length; relX++) {
+                const cellColor = row[relX];
                 if (cellColor === EMPTY_CELL) {
                     continue;
                 }
 
                 canvas.fillCSS(cellColor);
                 canvas.rect(
-                    x * CELL_SIZE, y * CELL_SIZE,
+                    this.pos.x + relX * CELL_SIZE, this.pos.y + relY * CELL_SIZE,
                     CELL_SIZE, CELL_SIZE
                 );
             }
         }
+        
+        if (SHOW_TETROMINO_SHADOW) {
+            this.currentTetromino.drawShadow(canvas);
+        }
+        this.currentTetromino.draw(canvas);
     }
 
     /**
@@ -568,8 +576,8 @@ class World {
     }
 }
 
-const WORLD = new World(10, 20);
-let highScore = 0;
+const WORLD = new World({"x": 0, "y": 0}, 10, 20);
+let highscore = 0;
 
 /**
  * Set's canvas defaults
@@ -605,9 +613,16 @@ function setup(canvas) {
  * Updates the game
  */
 function update() {
-    WORLD.update();
+    if (WORLD.update()) {
+        try {
+            localStorage.setItem("highscore", String(highscore));
+        } catch (err) {
+            console.log("Couldn't save highscore!");
+            console.log(err);
+        }
+    }
 
-    highScore = Math.max(WORLD.score, highScore);
+    highscore = Math.max(WORLD.score, highscore);
 }
 
 /**
@@ -618,26 +633,18 @@ function update() {
 function draw(canvas, deltaTime) {
     canvas.backgroundCSS(BACKGROUND_COLOR);
 
-    canvas.line(0, 0, 0, WORLD.height * CELL_SIZE);
-    canvas.line(WORLD.width * CELL_SIZE, 0, WORLD.width * CELL_SIZE, WORLD.height * CELL_SIZE);
-    canvas.line(0, WORLD.height * CELL_SIZE, WORLD.width * CELL_SIZE, WORLD.height * CELL_SIZE);
+    canvas.line(WORLD.pos.x, WORLD.pos.y, WORLD.pos.x, WORLD.pos.y + WORLD.height * CELL_SIZE);
+    canvas.line(WORLD.pos.x + WORLD.width * CELL_SIZE, WORLD.pos.y, WORLD.pos.x + WORLD.width * CELL_SIZE, WORLD.pos.y + WORLD.height * CELL_SIZE);
+    canvas.line(WORLD.pos.x, WORLD.pos.y + WORLD.height * CELL_SIZE, WORLD.pos.x + WORLD.width * CELL_SIZE, WORLD.pos.y + WORLD.height * CELL_SIZE);
 
-    canvas.strokeCSS(SHAPE_BORDER_COLOR);
-    
     WORLD.draw(canvas);
-
-    if (SHOW_TETROMINO_SHADOW) {
-        WORLD.currentTetromino.drawShadow(canvas);
-    }
-    WORLD.currentTetromino.draw(canvas);
 
     const playAreaHeight = WORLD.height * CELL_SIZE + PADDING;
     canvas.fillCSS(TEXT_COLOR);
-    canvas.text(formatString("Score: {0}", WORLD.score), 0, playAreaHeight + FONT.fontSize, { "noStroke": true });
-    canvas.text(formatString("Highscore: {0}", highScore), 0, playAreaHeight + PADDING + 2 * FONT.fontSize, { "noStroke": true });
+    canvas.text(formatString("Score: {0}", WORLD.score), WORLD.pos.x, WORLD.pos.y + playAreaHeight + FONT.fontSize, { "noStroke": true });
+    canvas.text(formatString("Highscore: {0}", highscore), WORLD.pos.x, WORLD.pos.y + playAreaHeight + PADDING + 2 * FONT.fontSize, { "noStroke": true });
 
-
-    canvas.translate(WORLD.width * CELL_SIZE + PADDING, 0);
+    canvas.translate(WORLD.pos.x + WORLD.width * CELL_SIZE + PADDING, WORLD.pos.y);
     const shapesToShow = Math.min(WORLD.tetrominoesPool.length, DISPLAY_NEXT);
     for (let i = 0; i < shapesToShow; i++) {
         const shape = WORLD.tetrominoesPool[i].getCurrentShape();
@@ -665,6 +672,8 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("load", () => {
+    highscore = Number(localStorage.getItem("highscore"));
+
     new wCanvas({
         "onSetup": setup,
         "onDraw": draw,
