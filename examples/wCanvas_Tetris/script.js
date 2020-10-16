@@ -36,6 +36,18 @@ const KEY_BINDINGS = {
 
 const FONT = new Font("Arial", 12);
 
+const SHADOW_COLOR = "#d3d3d3";
+const SHOW_TETROMINO_SHADOW = true;
+const TC = { // TC: Tetrominoes' Colors
+    "I":    "cyan",
+    "J":    "blue",
+    "L":  "orange",
+    "O":  "yellow",
+    "S":   "green",
+    "T": "magenta",
+    "Z":     "red"
+};
+
 const GRID_BORDER_COLOR = "#fff";
 const SHAPE_BORDER_COLOR = "#000";
 const TEXT_COLOR = "#fff";
@@ -67,114 +79,114 @@ function genShape(shapeID) {
     switch (shapeID) {
         case 0:
             return [
-                [[EMPTY_CELL, EMPTY_CELL, "cyan"],
-                 [EMPTY_CELL, EMPTY_CELL, "cyan"],
-                 [EMPTY_CELL, EMPTY_CELL, "cyan"],
-                 [EMPTY_CELL, EMPTY_CELL, "cyan"]],
+                [[EMPTY_CELL, EMPTY_CELL, TC.I],
+                 [EMPTY_CELL, EMPTY_CELL, TC.I],
+                 [EMPTY_CELL, EMPTY_CELL, TC.I],
+                 [EMPTY_CELL, EMPTY_CELL, TC.I]],
                  
                 [[EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
                  [EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-                 [    "cyan",     "cyan",     "cyan",     "cyan"]],
+                 [      TC.I,       TC.I,       TC.I,       TC.I]],
                  
-                [[EMPTY_CELL, "cyan"],
-                 [EMPTY_CELL, "cyan"],
-                 [EMPTY_CELL, "cyan"],
-                 [EMPTY_CELL, "cyan"]],
+                [[EMPTY_CELL, TC.I],
+                 [EMPTY_CELL, TC.I],
+                 [EMPTY_CELL, TC.I],
+                 [EMPTY_CELL, TC.I]],
 
                 [[EMPTY_CELL, EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-                 [    "cyan",     "cyan",     "cyan",     "cyan"]]
+                 [      TC.I,       TC.I,       TC.I,       TC.I]]
             ];
         case 1:
             return [
-                [[EMPTY_CELL, "blue"],
-                 [EMPTY_CELL, "blue"],
-                 [    "blue", "blue"]],
+                [[EMPTY_CELL, TC.J],
+                 [EMPTY_CELL, TC.J],
+                 [      TC.J, TC.J]],
 
-                [["blue", EMPTY_CELL, EMPTY_CELL],
-                 ["blue",     "blue",     "blue"]],
+                [[TC.J, EMPTY_CELL, EMPTY_CELL],
+                 [TC.J,       TC.J,       TC.J]],
 
-                [[EMPTY_CELL, "blue",     "blue"],
-                 [EMPTY_CELL, "blue", EMPTY_CELL],
-                 [EMPTY_CELL, "blue", EMPTY_CELL]],
+                [[EMPTY_CELL, TC.J,       TC.J],
+                 [EMPTY_CELL, TC.J, EMPTY_CELL],
+                 [EMPTY_CELL, TC.J, EMPTY_CELL]],
 
                 [[EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-                 [    "blue",     "blue",     "blue"],
-                 [EMPTY_CELL, EMPTY_CELL,     "blue"]]
+                 [      TC.J,       TC.J,       TC.J],
+                 [EMPTY_CELL, EMPTY_CELL,       TC.J]]
             ];
         case 2:
             return [
-                [[EMPTY_CELL, "orange", EMPTY_CELL],
-                 [EMPTY_CELL, "orange", EMPTY_CELL],
-                 [EMPTY_CELL, "orange",   "orange"]],
+                [[EMPTY_CELL, TC.L, EMPTY_CELL],
+                 [EMPTY_CELL, TC.L, EMPTY_CELL],
+                 [EMPTY_CELL, TC.L,       TC.L]],
                  
                 [[EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-                 [  "orange",   "orange",   "orange"],
-                 [  "orange", EMPTY_CELL, EMPTY_CELL]],
+                 [      TC.L,       TC.L,       TC.L],
+                 [      TC.L, EMPTY_CELL, EMPTY_CELL]],
 
-                [[  "orange", "orange"],
-                 [EMPTY_CELL, "orange"],
-                 [EMPTY_CELL, "orange"]],
+                [[      TC.L, TC.L],
+                 [EMPTY_CELL, TC.L],
+                 [EMPTY_CELL, TC.L]],
                 
-                [[EMPTY_CELL, EMPTY_CELL, "orange"],
-                 [  "orange",   "orange", "orange"]],
+                [[EMPTY_CELL, EMPTY_CELL, TC.L],
+                 [      TC.L,       TC.L, TC.L]],
 
 
             ];
         case 3:
             return [
-                [["yellow", "yellow"],
-                 ["yellow", "yellow"]]
+                [[TC.O, TC.O],
+                 [TC.O, TC.O]]
             ];
         case 4:
             return [
-                [[EMPTY_CELL,    "green", EMPTY_CELL],
-                 [EMPTY_CELL,    "green",    "green"],
-                 [EMPTY_CELL, EMPTY_CELL,    "green"]],
+                [[EMPTY_CELL,       TC.S, EMPTY_CELL],
+                 [EMPTY_CELL,       TC.S,       TC.S],
+                 [EMPTY_CELL, EMPTY_CELL,       TC.S]],
 
                 [[EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-                 [EMPTY_CELL,    "green",    "green"],
-                 [   "green",    "green", EMPTY_CELL]],
+                 [EMPTY_CELL,       TC.S,       TC.S],
+                 [      TC.S,       TC.S, EMPTY_CELL]],
                 
-                [[   "green", EMPTY_CELL],
-                 [   "green",    "green"],
-                 [EMPTY_CELL,    "green"]],
+                [[      TC.S, EMPTY_CELL],
+                 [      TC.S,       TC.S],
+                 [EMPTY_CELL,       TC.S]],
 
-                [[EMPTY_CELL,    "green",    "green"],
-                 [   "green",    "green", EMPTY_CELL]]
+                [[EMPTY_CELL,    TC.S,       TC.S],
+                 [      TC.S,    TC.S, EMPTY_CELL]]
             ];
         case 5:
             return [
-                [[EMPTY_CELL, "magenta", EMPTY_CELL],
-                 [ "magenta", "magenta",  "magenta"]],
+                [[EMPTY_CELL, TC.T, EMPTY_CELL],
+                 [      TC.T, TC.T,       TC.T]],
 
-                [[EMPTY_CELL, "magenta", EMPTY_CELL],
-                 [EMPTY_CELL, "magenta",  "magenta"],
-                 [EMPTY_CELL, "magenta", EMPTY_CELL]],
+                [[EMPTY_CELL, TC.T, EMPTY_CELL],
+                 [EMPTY_CELL, TC.T,       TC.T],
+                 [EMPTY_CELL, TC.T, EMPTY_CELL]],
 
                 [[EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-                 [ "magenta",  "magenta",  "magenta"],
-                 [EMPTY_CELL,  "magenta", EMPTY_CELL]],
+                 [      TC.T,       TC.T,       TC.T],
+                 [EMPTY_CELL,       TC.T, EMPTY_CELL]],
 
-                [[EMPTY_CELL, "magenta"],
-                 [ "magenta", "magenta"],
-                 [EMPTY_CELL, "magenta"]]
+                [[EMPTY_CELL, TC.T],
+                 [      TC.T, TC.T],
+                 [EMPTY_CELL, TC.T]]
             ];
         case 6:
             return [
-                [[EMPTY_CELL, EMPTY_CELL,      "red"],
-                 [EMPTY_CELL,      "red",      "red"],
-                 [EMPTY_CELL,      "red", EMPTY_CELL]],
+                [[EMPTY_CELL, EMPTY_CELL,       TC.Z],
+                 [EMPTY_CELL,       TC.Z,       TC.Z],
+                 [EMPTY_CELL,       TC.Z, EMPTY_CELL]],
 
                 [[EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-                 [     "red",      "red", EMPTY_CELL],
-                 [EMPTY_CELL,      "red",      "red"]],
+                 [      TC.Z,       TC.Z, EMPTY_CELL],
+                 [EMPTY_CELL,       TC.Z,       TC.Z]],
                 
-                [[EMPTY_CELL,      "red"],
-                 [     "red",      "red"],
-                 [     "red", EMPTY_CELL]],
+                [[EMPTY_CELL,       TC.Z],
+                 [      TC.Z,       TC.Z],
+                 [      TC.Z, EMPTY_CELL]],
  
-                [[     "red", "red", EMPTY_CELL],
-                 [EMPTY_CELL, "red",      "red"]]
+                [[      TC.Z, TC.Z, EMPTY_CELL],
+                 [EMPTY_CELL, TC.Z,       TC.Z]]
             ];
     }
 }
@@ -186,7 +198,7 @@ function genShape(shapeID) {
  * @param {Number} y - The y pos
  * @param {Shape} shape - The shape to draw
  */
-function drawShape(canvas, x, y, shape) {
+function drawShape(canvas, x, y, shape, color) {
     if (shape !== undefined) {
         for (let relY = 0; relY < shape.length; relY++) {
             const row = shape[relY];
@@ -196,7 +208,7 @@ function drawShape(canvas, x, y, shape) {
                     continue;
                 }
 
-                canvas.fillCSS(cellColor);
+                canvas.fillCSS(color === undefined ? cellColor : color);
                 canvas.rect(
                     (x + relX) * CELL_SIZE, (y + relY) * CELL_SIZE,
                     CELL_SIZE, CELL_SIZE
@@ -214,10 +226,14 @@ function drawShape(canvas, x, y, shape) {
  * @typedef {Array<Shape>} Shapes
  */
 
+/**
+ * @typedef {{x: Number, y: Number}} Point
+ */
+
 class Tetromino {
     /**
      * @param {Shapes} shapes - The shapes that the tetromino can have
-     * @param {{x: Number, y: Number}} pos - The pos of the tetromino
+     * @param {Point} pos - The pos of the tetromino
      * @param {World} world - The world the tetromino is bound to
      */
     constructor(shapes, pos, world) {
@@ -241,6 +257,20 @@ class Tetromino {
      */
     draw(canvas) {
         drawShape(canvas, this.pos.x, this.pos.y, this.getCurrentShape());
+    }
+
+    /**
+     * Draws Tetromino's shadow showing where it's dropping
+     * @param {wCanvas} canvas - The canvas to draw the shadow on
+     */
+    drawShadow(canvas) {
+        const shape = this.getCurrentShape();
+        for (let y = this.pos.y; y < this.world.height; y++) {
+            if (!this.world.tetrominoFits(this, undefined, y)) {
+                drawShape(canvas, this.pos.x, y - 1, shape, SHADOW_COLOR);
+                break;
+            }
+        }
     }
 
     /**
@@ -293,13 +323,11 @@ class Tetromino {
      * @returns {Boolean} Whether or not it could move into the specified pos
      */
     moveX(ammount) {
-        this.pos.x += ammount;
-
-        if (this.world.tetrominoFits(this)) {
+        if (this.world.tetrominoFits(this, this.pos.x + ammount)) {
+            this.pos.x += ammount;
             return true;
         }
 
-        this.pos.x -= ammount;
         return false;
     }
 
@@ -309,13 +337,11 @@ class Tetromino {
      * @returns {Boolean} Whether or not it could move into the specified pos
      */
     moveY(ammount) {
-        this.pos.y += ammount;
-
-        if (this.world.tetrominoFits(this)) {
+        if (this.world.tetrominoFits(this, undefined, this.pos.y + ammount)) {
+            this.pos.y += ammount;
             return true;
         }
         
-        this.pos.y -= ammount;
         return false;
     }
 }
@@ -449,8 +475,9 @@ class World {
             this.addTetrominoToPool(
                 genShape(Math.floor(Math.random() * SHAPES))
             );
-
-            if (!this.tetrominoFits(this.nextTetromino())) {
+            
+            const newTetromino = this.nextTetromino();
+            if (!this.tetrominoFits(newTetromino)) {
                 this.clearGrid();
                 this.score = 0;
                 return true;
@@ -514,9 +541,14 @@ class World {
     /**
      * Checks if the specified tetromino can stay in its current position
      * @param {Tetromino} tetromino - The tetromino to check for
+     * @param {Number} x - Uses this value as the x pos of the tetromino (if `undefined` it will use tetromino's pos)
+     * @param {Number} y - Uses this value as the y pos of the tetromino (if `undefined` it will use tetromino's pos)
      * @returns {Boolean} Whether or not the tetromino can stay
      */
-    tetrominoFits(tetromino) {
+    tetrominoFits(tetromino, x, y) {
+        x = x === undefined ? tetromino.pos.x : x;
+        y = y === undefined ? tetromino.pos.y : y;
+
         const shape = tetromino.getCurrentShape();
         for (let relY = 0; relY < shape.length; relY++) {
             const row = shape[relY];
@@ -526,7 +558,7 @@ class World {
                     continue;
                 }
 
-                if (this.getGridCell(tetromino.pos.x + relX, tetromino.pos.y + relY) !== EMPTY_CELL) {
+                if (this.getGridCell(x + relX, y + relY) !== EMPTY_CELL) {
                     return false;
                 }
             }
@@ -591,9 +623,13 @@ function draw(canvas, deltaTime) {
     canvas.line(0, WORLD.height * CELL_SIZE, WORLD.width * CELL_SIZE, WORLD.height * CELL_SIZE);
 
     canvas.strokeCSS(SHAPE_BORDER_COLOR);
+    
     WORLD.draw(canvas);
-    WORLD.currentTetromino.draw(canvas);
 
+    if (SHOW_TETROMINO_SHADOW) {
+        WORLD.currentTetromino.drawShadow(canvas);
+    }
+    WORLD.currentTetromino.draw(canvas);
 
     const playAreaHeight = WORLD.height * CELL_SIZE + PADDING;
     canvas.fillCSS(TEXT_COLOR);
