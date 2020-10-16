@@ -27,6 +27,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 import { wCanvas, formatString, Font } from "../../wcanvas.js";
 
 /* SETTINGS START */
+const KEY_BINDINGS = {
+    "rotate"    : [ "w", "ArrowUp"    ],
+    "moveLeft"  : [ "a", "ArrowLeft"  ],
+    "moveDown"  : [ "s", "ArrowDown"  ],
+    "moveRight" : [ "d", "ArrowRight" ]
+};
+
 const FONT = new Font("Arial", 12);
 
 const GRID_BORDER_COLOR = "#fff";
@@ -604,25 +611,20 @@ function draw(canvas, deltaTime) {
     }
 }
 
-window.addEventListener("keypress", (e) => {
+window.addEventListener("keydown", (e) => {
     const tetromino = WORLD.currentTetromino;
     if (tetromino === undefined) {
         return;
     }
 
-    switch (e.key) {
-        case "w":
-            tetromino.nextShape();
-            break;
-        case "a":
-            tetromino.moveX(-1);
-            break;
-        case "s":
-            tetromino.moveY(1);
-            break;
-        case "d":
-            tetromino.moveX(1);
-            break;
+    if (KEY_BINDINGS.rotate.includes(e.key)) {
+        tetromino.nextShape();
+    } else if (KEY_BINDINGS.moveLeft.includes(e.key)) {
+        tetromino.moveX(-1);
+    } else if (KEY_BINDINGS.moveDown.includes(e.key)) {
+        tetromino.moveY(1);
+    } else if (KEY_BINDINGS.moveRight.includes(e.key)) {
+        tetromino.moveX(1);
     }
 });
 
