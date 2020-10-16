@@ -36,7 +36,9 @@ const BACKGROUND_COLOR = "#000";
 
 const PADDING = 10;
 const CELL_SIZE = 16;
-const SCALE = 2;
+
+const SCALE_HEIGHT = 970;
+const SCALE = 2.5;
 
 const DISPLAY_NEXT = 4;
 const POOL_SIZE = 10;
@@ -531,6 +533,18 @@ const WORLD = new World(10, 20);
 let highScore = 0;
 
 /**
+ * Set's canvas defaults
+ * @param {wCanvas} canvas - The canvas where the default options should be set in
+ */
+function injectDefaults(canvas) {
+    canvas.textFont(FONT);
+    canvas.strokeWeigth(1);
+    canvas.strokeCSS(GRID_BORDER_COLOR);
+    canvas.translate(PADDING);
+    canvas.scale(window.innerHeight / SCALE_HEIGHT * SCALE);
+}
+
+/**
  * Sets up the game
  * @param {wCanvas} canvas
  */
@@ -543,11 +557,7 @@ function setup(canvas) {
 
     WORLD.nextTetromino();
 
-    canvas.textFont(FONT);
-    canvas.translate(PADDING, PADDING);
-    canvas.scale(SCALE, SCALE);
-    canvas.strokeWeigth(1);
-    canvas.strokeCSS(GRID_BORDER_COLOR);
+    injectDefaults(canvas);
 
     canvas.startLoop();
 }
@@ -619,7 +629,13 @@ window.addEventListener("keypress", (e) => {
 window.addEventListener("load", () => {
     new wCanvas({
         "onSetup": setup,
-        "onDraw": draw
+        "onDraw": draw,
+        "onResize": (canvas) => {
+            canvas.canvas.width = window.innerWidth + 1;
+            canvas.canvas.height = window.innerHeight + 1;
+
+            injectDefaults(canvas);
+        }
     })
 
     setInterval(update, 1_000);
