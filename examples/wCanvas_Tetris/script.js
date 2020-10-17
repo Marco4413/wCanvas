@@ -31,7 +31,8 @@ const KEY_BINDINGS = {
     "rotate"    : [ "w", "ArrowUp"    ],
     "moveLeft"  : [ "a", "ArrowLeft"  ],
     "moveDown"  : [ "s", "ArrowDown"  ],
-    "moveRight" : [ "d", "ArrowRight" ]
+    "moveRight" : [ "d", "ArrowRight" ],
+    "dropDown"  : [ " "               ]
 };
 
 const FONT = new Font("Arial", 12);
@@ -280,6 +281,18 @@ class Tetromino {
     }
 
     /**
+     * Calculates the distance between itself and a collision that's underneath it and returns it
+     * @returns {Number} The distance between itself and a collision that's underneath it
+     */
+    castDown() {
+        for (let y = this.pos.y; y < this.game.height; y++) {
+            if (!this.game.tetrominoFits(this, undefined, y)) {
+                return y - this.pos.y - 1;
+            }
+        }
+    }
+
+    /**
      * Draws the tetromino
      * @param {wCanvas} canvas - The canvas to draw the tetromino on
      */
@@ -293,12 +306,13 @@ class Tetromino {
      */
     drawShadow(canvas) {
         const shape = this.getCurrentShape();
-        for (let y = this.pos.y; y < this.game.height; y++) {
-            if (!this.game.tetrominoFits(this, undefined, y)) {
-                drawShape(canvas, this.game.pos.x + this.pos.x * CELL_SIZE, this.game.pos.y + (y - 1) * CELL_SIZE, shape, SHADOW_COLOR);
-                break;
-            }
-        }
+        drawShape(
+            canvas,
+            this.game.pos.x + this.pos.x * CELL_SIZE,
+            this.game.pos.y + (this.pos.y + this.castDown()) * CELL_SIZE,
+            shape,
+            SHADOW_COLOR
+        );
     }
 
     /**
@@ -733,6 +747,8 @@ window.addEventListener("keydown", (e) => {
         tetromino.moveY(1);
     } else if (KEY_BINDINGS.moveRight.includes(e.key)) {
         tetromino.moveX(1);
+    } else if (KEY_BINDINGS.dropDown.includes(e.key)) {
+        tetromino.moveY(tetromino.castDown());
     }
 });
 
