@@ -69,7 +69,7 @@ const SCORES = [
 /* SETTINGS END */
 
 const EMPTY_CELL = " ";
-const SHAPES = 6;
+const SHAPES = 7;
 
 /**
  * Returns a new shape from the specified ID
@@ -189,6 +189,33 @@ function genShape(shapeID) {
                 [[      TC.Z, TC.Z, EMPTY_CELL],
                  [EMPTY_CELL, TC.Z,       TC.Z]]
             ];
+    }
+}
+
+let getRandomShape;
+{
+    const pool = [];
+
+    function refillPool() {
+        for (let i = pool.length; i < SHAPES; i++) {
+            pool[i] = i;
+        }
+    }
+
+    /**
+     * Generates a random shape
+     * @function
+     * @returns {Shape} The shape that was generated
+     */
+    getRandomShape = () => {
+        if (pool.length <= 0) {
+            refillPool();
+        }
+
+        const poolIndex = Math.floor(Math.random() * pool.length);
+        const shape = genShape(pool[poolIndex]);
+        pool.splice(poolIndex, 1);
+        return shape;
     }
 }
 
@@ -534,7 +561,7 @@ class Game {
 
             
             this.addTetrominoToPool(
-                genShape(Math.floor(Math.random() * SHAPES))
+                getRandomShape()
             );
             
             const newTetromino = this.nextTetromino();
@@ -657,7 +684,7 @@ function injectDefaults(canvas) {
 function setup(canvas) {
     for (let i = 0; i < POOL_SIZE; i++) {
         GAME.addTetrominoToPool(
-            genShape(Math.floor(Math.random() * SHAPES))
+            getRandomShape()
         );
     }
 
