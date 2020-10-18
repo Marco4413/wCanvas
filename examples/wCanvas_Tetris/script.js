@@ -26,19 +26,35 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import { wCanvas, formatString, Font } from "../../wcanvas.js";
 
-/* SETTINGS START */
+function defaultSettings() {
+    /* SETTINGS START */
+    return {
+        shadow_color: "#d3d3d3",
+        show_tetromino_shadow: true,
+    
+        world_border_color: "#ffffff",
+        shape_border_color: "#000000",
+        text_color: "#ffffff",
+        background_color: "#000000",
+    
+        display_next: 4
+    }
+    /* SETTINGS END */
+}
+
+let settings = defaultSettings();
+
 const KEY_BINDINGS = {
-    "rotate"    : [ "w", "ArrowUp"    ],
-    "moveLeft"  : [ "a", "ArrowLeft"  ],
-    "moveDown"  : [ "s", "ArrowDown"  ],
-    "moveRight" : [ "d", "ArrowRight" ],
-    "dropDown"  : [ " "               ]
+    "rotate"       : [ "w", "ArrowUp"    ],
+    "moveLeft"     : [ "a", "ArrowLeft"  ],
+    "moveDown"     : [ "s", "ArrowDown"  ],
+    "moveRight"    : [ "d", "ArrowRight" ],
+    "dropDown"     : [ " "               ],
+    "hideSettings" : [ "h"               ]
 };
 
 const FONT = new Font("Arial", 12);
 
-const SHADOW_COLOR = "#d3d3d3";
-const SHOW_TETROMINO_SHADOW = true;
 const TC = { // TC: Tetrominoes' Colors
     "I":    "cyan",
     "J":    "blue",
@@ -49,11 +65,6 @@ const TC = { // TC: Tetrominoes' Colors
     "Z":     "red"
 };
 
-const WORLD_BORDER_COLOR = "#fff";
-const SHAPE_BORDER_COLOR = "#000";
-const TEXT_COLOR = "#fff";
-const BACKGROUND_COLOR = "#000";
-
 const GAME_HORIZONTAL_MARGIN = 0.5; // This is a percentage (50% means that the game is centered on the screen)
 const PADDING = 10;
 const CELL_SIZE = 16;
@@ -61,13 +72,12 @@ const CELL_SIZE = 16;
 const SCALE_HEIGHT = 970;
 const SCALE = 2.5;
 
-const DISPLAY_NEXT = 4;
 const POOL_SIZE = 10;
 
 const SCORES = [
     40, 100, 300, 1200
 ];
-/* SETTINGS END */
+
 
 const EMPTY_CELL = " ";
 const SHAPES = 7;
@@ -311,7 +321,7 @@ class Tetromino {
             this.game.pos.x + this.pos.x * CELL_SIZE,
             this.game.pos.y + (this.pos.y + this.castDown()) * CELL_SIZE,
             shape,
-            SHADOW_COLOR
+            settings.shadow_color
         );
     }
 
@@ -461,7 +471,7 @@ class Game {
      */
     getWorldCell(x, y) {
         if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
-            return BACKGROUND_COLOR;
+            return "OUTOFBOUNDS";
         }
 
         return this.world[y][x];
@@ -607,12 +617,12 @@ class Game {
      */
     drawWorld(canvas) {
 
-        canvas.strokeCSS(WORLD_BORDER_COLOR);
+        canvas.strokeCSS(settings.world_border_color);
         canvas.line(this.pos.x, this.pos.y, this.pos.x, this.pos.y + this.height * CELL_SIZE);
         canvas.line(this.pos.x + this.width * CELL_SIZE, this.pos.y, this.pos.x + this.width * CELL_SIZE, this.pos.y + this.height * CELL_SIZE);
         canvas.line(this.pos.x, this.pos.y + this.height * CELL_SIZE, this.pos.x + this.width * CELL_SIZE, this.pos.y + this.height * CELL_SIZE);    
 
-        canvas.strokeCSS(SHAPE_BORDER_COLOR);
+        canvas.strokeCSS(settings.shape_border_color);
         for (let relY = 0; relY < this.world.length; relY++) {
             const row = this.world[relY];
             for (let relX = 0; relX < row.length; relX++) {
@@ -635,9 +645,9 @@ class Game {
      * @param {wCanvas} canvas  - The canvas to draw the game's current tetromino on
      */
     drawCurrentTetromino(canvas) {
-        canvas.strokeCSS(SHAPE_BORDER_COLOR);
+        canvas.strokeCSS(settings.shape_border_color);
         
-        if (SHOW_TETROMINO_SHADOW) {
+        if (settings.show_tetromino_shadow) {
             this.currentTetromino.drawShadow(canvas);
         }
         this.currentTetromino.draw(canvas);
@@ -648,12 +658,12 @@ class Game {
      * @param {wCanvas} canvas - The canvas to draw the game's pool on
      */
     drawPool(canvas) {
-        canvas.strokeCSS(SHAPE_BORDER_COLOR);
+        canvas.strokeCSS(settings.shape_border_color);
 
         const relX = this.width * CELL_SIZE + PADDING;
         let currentY = 0;
 
-        const shapesToShow = Math.min(this.tetrominoesPool.length, DISPLAY_NEXT);
+        const shapesToShow = Math.min(this.tetrominoesPool.length, settings.display_next);
         for (let i = 0; i < shapesToShow; i++) {
             const shape = this.tetrominoesPool[i].getCurrentShape();
             const shapeHeight = shape.length * CELL_SIZE;
@@ -668,7 +678,7 @@ class Game {
      */
     drawScores(canvas) {
         const playAreaHeight = this.height * CELL_SIZE + PADDING;
-        canvas.fillCSS(TEXT_COLOR);
+        canvas.fillCSS(settings.text_color);
         canvas.text(formatString("Score: {0}", this.score), this.pos.x, this.pos.y + playAreaHeight + FONT.fontSize, { "noStroke": true });
         canvas.text(formatString("Highscore: {0}", this.highscore), this.pos.x, this.pos.y + playAreaHeight + PADDING + 2 * FONT.fontSize, { "noStroke": true });
     }
@@ -685,10 +695,104 @@ function injectDefaults(canvas) {
 
     canvas.textFont(FONT);
     canvas.strokeWeigth(1);
-    canvas.strokeCSS(WORLD_BORDER_COLOR);
+    canvas.strokeCSS(settings.world_border_color);
     canvas.scale(currentScale);
 
     GAME.pos.x = (canvas.canvas.width / currentScale - GAME.width * CELL_SIZE) * GAME_HORIZONTAL_MARGIN;
+}
+
+/**
+ * Syncs settings and all the elements that store them with the saved ones
+ */
+function syncSettings() {
+    /** @type {HTMLDivElement} */
+    const settingsPanel = document.getElementById("settingsPanel");
+    Object.keys(settings).forEach(
+        key => {
+            const savedSetting = localStorage.getItem("settings_" + key);
+            if (savedSetting !== null) {
+                switch (typeof settings[key]) {
+                    case "string":
+                        settings[key] = savedSetting;
+                        break;
+                    case "number":
+                        settings[key] = Number(savedSetting);
+                        break;
+                    case "boolean":
+                        settings[key] = savedSetting === "true";
+                        break;
+                }
+            }
+
+            if (settingsPanel !== null) {
+                /** @type {HTMLInputElement} */
+                const element = settingsPanel.querySelector("#" + key);
+                if (element !== null) {
+                    switch (element.type) {
+                        case "color":
+                            element.value = settings[key];
+                            break;
+                        case "checkbox":
+                            element.checked = settings[key];
+                            break;
+                        case "number":
+                            element.value = settings[key];
+                    }
+                }
+            }
+        }
+    );
+}
+
+/**
+ * Applies settings based on the given element's id and value
+ * @param {HTMLInputElement} settingElement - The element that has the new settings
+ */
+window.applySetting = function (settingElement) {
+    if (settings[settingElement.id] === undefined) {
+        return;
+    }
+
+    let valueToSave;
+
+    switch (settingElement.type) {
+        case "color":
+            valueToSave = settingElement.value;
+            settings[settingElement.id] = settingElement.value;
+            break;
+        case "checkbox":
+            valueToSave = settingElement.checked ? "true" : "false";
+            settings[settingElement.id] = settingElement.checked;
+            break;
+        case "number":
+            valueToSave = String(settingElement.valueAsNumber);
+            settings[settingElement.id] = settingElement.valueAsNumber;
+            break;
+    }
+
+    console.log(formatString("Setting \"{0}\" changed to \"{1}\"", settingElement.id, valueToSave));
+
+    try {
+        localStorage.setItem("settings_" + settingElement.id, valueToSave);
+        console.log("Setting saved succesfully!");
+    } catch (err) {
+        console.log("Setting couldn't be saved.");
+        console.log(err);
+    }
+    
+}
+
+/**
+ * Resets settings to the default values
+ */
+window.resetSettings = function () {
+    settings = defaultSettings();
+    Object.keys(settings).forEach(
+        key => {
+            localStorage.removeItem("settings_" + key);
+        }
+    );
+    syncSettings();
 }
 
 /**
@@ -717,7 +821,7 @@ function update() {
         try {
             localStorage.setItem("highscore", String(GAME.highscore));
         } catch (err) {
-            console.log("Couldn't save highscore!");
+            console.log("Couldn't save highscore.");
             console.log(err);
         }
     }
@@ -729,7 +833,7 @@ function update() {
  * @param {Number} deltaTime
  */
 function draw(canvas, deltaTime) {
-    canvas.backgroundCSS(BACKGROUND_COLOR);
+    canvas.backgroundCSS(settings.background_color);
     GAME.drawAll(canvas);
 }
 
@@ -749,10 +853,17 @@ window.addEventListener("keydown", (e) => {
         tetromino.moveX(1);
     } else if (KEY_BINDINGS.dropDown.includes(e.key)) {
         tetromino.moveY(tetromino.castDown());
+    } else if (KEY_BINDINGS.hideSettings.includes(e.key)) {
+        const settingsPanel = document.getElementById("settingsPanel");
+        if (settingsPanel !== null) {
+            settingsPanel.classList.toggle("hidden");
+        }
     }
 });
 
 window.addEventListener("load", () => {
+    syncSettings();
+
     GAME.highscore = Number(localStorage.getItem("highscore"));
 
     new wCanvas({
