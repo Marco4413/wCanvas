@@ -33,3 +33,10 @@ window.addEventListener("load", () => {
     to make JSDoc understand that it should be clickable
 -->
 Sure, you can check it out at [https://hds536jhmk.github.io/wCanvas/](https://hds536jhmk.github.io/wCanvas/)
+
+### Are there any scripts made by using this library?
+
+Yup, sure there are!
+
+Here's the list of all official scripts that were made by using this library:
+ - [Tetris_wCanvas](https://github.com/hds536jhmk/Tetris_wCanvas)
