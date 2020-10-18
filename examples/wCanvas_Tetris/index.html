@@ -18,6 +18,7 @@
         }
 
         #settingsPanel {
+            max-height: 50%;
             font-family: Arial, Helvetica, sans-serif;
             font-size: medium;
             position: absolute;
@@ -29,12 +30,11 @@
         .controller {
             margin: 10px;
             table-layout: fixed;
-            transform: translate(0, -100%);
             position: absolute;
-            top: 100%;
+            bottom: 0px;
             left: 0px;
-            width: 200px;
-            height: 150px;
+            width: 150px;
+            height: 100px;
         }
 
         .control {
@@ -49,6 +49,14 @@
 
         .hidden {
             display: none;
+        }
+
+        .transparent {
+            position: absolute;
+            outline: none;
+            color: transparent;
+            background-color: transparent;
+            border-color: transparent;
         }
     </style>
 </head>
@@ -94,6 +102,7 @@
             <th>Press H to hide</th>
         </tr>
     </table>
+    <button class="transparent" onclick="document.getElementById('settingsPanel').classList.toggle('hidden')"></button>
 
     <table id="controller" class="controller">
         <tr>
@@ -101,10 +110,10 @@
             <th><button class="control" onclick="GAME.currentTetromino.nextShape()"> ↻ </button></th>
             <th><button class="control" onclick="GAME.currentTetromino.moveY(GAME.currentTetromino.castDown())"> ⇊ </button></th>
         </tr>
+        <tr>
             <th><button class="control" onclick="GAME.currentTetromino.moveX(-1)"> ← </button></th>
             <th><button class="control" onclick="GAME.currentTetromino.moveY(1)"> ↓ </button></th>
             <th><button class="control" onclick="GAME.currentTetromino.moveX(1)"> → </button></th>
-        <tr>
         </tr>
     </table>
 </body>
