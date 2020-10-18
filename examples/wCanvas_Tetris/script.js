@@ -45,12 +45,13 @@ function defaultSettings() {
 let settings = defaultSettings();
 
 const KEY_BINDINGS = {
-    "rotate"       : [ "w", "ArrowUp"    ],
-    "moveLeft"     : [ "a", "ArrowLeft"  ],
-    "moveDown"     : [ "s", "ArrowDown"  ],
-    "moveRight"    : [ "d", "ArrowRight" ],
-    "dropDown"     : [ " "               ],
-    "hideSettings" : [ "h"               ]
+    "rotate"         : [ "w", "ArrowUp"    ],
+    "moveLeft"       : [ "a", "ArrowLeft"  ],
+    "moveDown"       : [ "s", "ArrowDown"  ],
+    "moveRight"      : [ "d", "ArrowRight" ],
+    "dropDown"       : [ " "               ],
+    "hideSettings"   : [ "h"               ],
+    "hideController" : [ "c"               ]
 };
 
 const FONT = new Font("Arial", 12);
@@ -685,6 +686,7 @@ class Game {
 }
 
 const GAME = new Game({"x": PADDING, "y": PADDING}, 10, 20);
+window.GAME = GAME;
 
 /**
  * Set's canvas defaults
@@ -857,6 +859,11 @@ window.addEventListener("keydown", (e) => {
         const settingsPanel = document.getElementById("settingsPanel");
         if (settingsPanel !== null) {
             settingsPanel.classList.toggle("hidden");
+        }
+    } else if (KEY_BINDINGS.hideController.includes(e.key)) {
+        const controller = document.getElementById("controller");
+        if (controller !== null) {
+            controller.classList.toggle("hidden");
         }
     }
 });
