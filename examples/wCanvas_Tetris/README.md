@@ -5,6 +5,7 @@
  - **A** or **LEFT ARROW** : Moves the tetromino to the left;
  - **D** or **RIGHT ARROW** : Moves the tetromino to the right;
  - **SPACE BAR** : Drops down the tetromino instantly;
- - **H** : Toggles Settings Menu.
+ - **H** : Toggles Settings Menu;
+ - **C** : Toggles Controller.
 
 **Enjoy This Game!**
