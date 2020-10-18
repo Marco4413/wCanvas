@@ -32,15 +32,17 @@
  * @constant
  * @type {String}
  */
-export const version = "0.1.7";
+export const version = "0.1.8";
 
-let uuid = 0;
 /**
  * Generates an UUID used for all auto generated stuff from this library
  * @function
- * @returns {Number} An UUID
+ * @returns {Number} An UUID within the library
  */
-export const generateUUID = () => { return uuid++; }
+export const generateUUID = (function () {
+    let uuid = 0;
+    return () => { return uuid++; }
+})();
 
 /**
  * Formats a string by replacing `{i}` with `formats[i]`
@@ -115,10 +117,10 @@ export const formatString = (str, ...formats) => {
  * @property {Boolean} [returnWidth] - Whether or not to return text's width after it was drawn
  */
 
- /**
-  * Stores font informations (To be used with {@link wCanvas#textFont})
-  * @class
-  */
+/**
+ * Stores font informations (To be used with {@link wCanvas#textFont})
+ * @class
+ */
 export class Font {
     /**
      * The font family
