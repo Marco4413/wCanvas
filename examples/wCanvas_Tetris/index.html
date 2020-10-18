@@ -12,9 +12,62 @@
             padding: 0px;
             overflow: hidden;
         }
+
+        #settingsPanel {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: medium;
+            position: absolute;
+            background-color: white;
+            color: black;
+            padding: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    
+    <table id="settingsPanel" class="hidden">
+        <tr>
+            <th><label>Shadow's Color</label></th>
+            <th><input type="color" id="shadow_color" style="left: 100%;" onchange="applySetting(this)"></th>
+        </tr>
+        
+        <tr>
+            <th><label>Display Shadow</label></th>
+            <th><input type="checkbox" id="show_tetromino_shadow" onchange="applySetting(this)"></th>
+        </tr>
+
+        <tr>
+            <th><label>World Border Color</label></th>
+            <th><input type="color" id="world_border_color" style="right: 0px;" onchange="applySetting(this)"></th>
+        </tr>
+
+        <tr>
+            <th><label>Shape Border Color</label></th>
+            <th><input type="color" id="shape_border_color" onchange="applySetting(this)"></th>
+        </tr>
+
+        <tr>
+            <th><label>Text Color</label></th>
+            <th><input type="color" id="text_color" onchange="applySetting(this)"></th>
+        </tr>
+
+        <tr>
+            <th><label>Background Color</label></th>
+            <th><input type="color" id="background_color" onchange="applySetting(this)"></th>
+        </tr>
+
+        <tr>
+            <th><label>Display Next</label></th>
+            <th><input type="number" id="display_next" onchange="applySetting(this)"></th>
+        </tr>
+
+        <tr>
+            <th><button id="reset_settings" onclick="resetSettings()">Reset Settings</button></th>
+            <th>Press H to hide</th>
+        </tr>
+    </table>
 </body>
 </html>
