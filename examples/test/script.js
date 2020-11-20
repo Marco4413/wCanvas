@@ -1,5 +1,5 @@
 
-import * as wcanvas from "../wcanvas.js";
+import * as wcanvas from "../../wcanvas.js";
 
 window.addEventListener("load", () => {
     const font = new wcanvas.Font("Times New Roman", 12);
