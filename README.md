@@ -39,4 +39,5 @@ Sure, you can check it out at [https://hds536jhmk.github.io/wCanvas/](https://hd
 Yup, sure there are!
 
 Here's the list of all official scripts that were made by using this library:
+ - [Audio Responsive Avatar](https://steamcommunity.com/sharedfiles/filedetails/?id=2225740349) (A Wallpaper Engine wallpaper. Tho the library was modified to not use ES6 modules)
  - [Tetris_wCanvas](https://github.com/hds536jhmk/Tetris_wCanvas)
