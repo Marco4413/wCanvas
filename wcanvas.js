@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.1.8";
+export const version = "0.1.9";
 
 /**
  * Generates an UUID used for all auto generated stuff from this library
@@ -60,6 +60,88 @@ export const formatString = (str, ...formats) => {
     );
 
     return str;
+}
+
+/**
+ * A static class that provides some useful math functions
+ * @class
+ * @static
+ */
+export class UMath {
+
+    /**
+     * Constrains a number between the specified range
+     * @method
+     * @static
+     * @param {Number} val - The number to be constrained
+     * @param {Number} start - The minimum number that the specified one can be
+     * @param {Number} end - The maximum number that the specified one can be
+     * @returns {Number} The constrained number
+     */
+    static constrain(val, start, end) {
+        return Math.max(Math.min(val, end), start);
+    }
+
+    /**
+     * Linearly interpolates the specified number to the specified target
+     * @method
+     * @static
+     * @param {Number} val - The number to interpolate
+     * @param {Number} target - The target of the specified value
+     * @param {Number} perc - How near value should be to target [0; 1]
+     * @returns {Number} The interpolated value
+     */
+    static lerp(val, target, perc) {
+        return val + (target - val) * UMath.constrain(perc, 0, 1);
+    }
+
+    /**
+     * Maps the specified value that is in the range [start1; end1] to the new range [start2; end2]
+     * @method
+     * @static
+     * @param {Number} val - The value to be mapped
+     * @param {Number} start1 - The start of the value's range
+     * @param {Number} end1 - The end of the value's range
+     * @param {Number} start2 - The start of the value's new range
+     * @param {Number} end2 - The end of the value's new range
+     * @param {Boolean} constrain - Whether or not the mapped value should be contrained to the new range
+     * @returns {Number} The mapped value
+     */
+    static map(val, start1, end1, start2, end2, constrain = false) {
+        const mappedValue = (val - start1) / (end1 - start1) * (end2 - start2) + start2;
+        return constrain ? UMath.constrain(mappedValue, start2, end2) : mappedValue;
+    }
+
+    /**
+     * Returns the squared distance between two points (See: {@link UMath.dist})
+     * @method
+     * @static
+     * @param {Number} x1 - The x of the first point
+     * @param {Number} y1 - The y of the first point
+     * @param {Number} x2 - The x of the second point
+     * @param {Number} y2 - The y of the second point
+     * @returns {Number} The squared distance between the two points
+     */
+    static distSq(x1, y1, x2, y2) {
+        const x = x2 - x1;
+        const y = y2 - y1;
+        return x * x + y * y;
+    }
+
+    /**
+     * Returns the distance between the specified points (See: {@link UMath.distSq})
+     * @method
+     * @static
+     * @param {Number} x1 - The x of the first point
+     * @param {Number} y1 - The y of the first point
+     * @param {Number} x2 - The x of the second point
+     * @param {Number} y2 - The y of the second point
+     * @returns {Number} The distance between the two points
+     */
+    static dist(x1, y1, x2, y2) {
+        return Math.sqrt(UMath.distSq(x1, y1, x2, y2));
+    }
+
 }
 
 /**
