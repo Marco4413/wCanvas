@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.1.10";
+export const version = "0.1.11";
 
 /**
  * Generates an UUID used for all auto generated stuff from this library
@@ -161,10 +161,10 @@ UMath.Vec2 = class {
 
     /**
      * @constructor
-     * @param {Number} x - The x component of the new Vector
-     * @param {Number} y - The y component of the new Vector
+     * @param {Number} [x] - The x component of the new Vector
+     * @param {Number} [y] - The y component of the new Vector
      */
-    constructor(x, y) {
+    constructor(x = 0, y = 0) {
         this.x = x;
         this.y = y;
     }
@@ -224,7 +224,7 @@ UMath.Vec2 = class {
      * @returns {UMath.Vec2} this
      */
     add(other) {
-        if (typeof other === "object" || other instanceof UMath.Vec2) {
+        if (typeof other === "object") {
             this.x += other.x;
             this.y += other.y;
         } else {
@@ -242,7 +242,7 @@ UMath.Vec2 = class {
      * @returns {UMath.Vec2} this
      */
     sub(other) {
-        if (typeof other === "object" || other instanceof UMath.Vec2) {
+        if (typeof other === "object") {
             this.x -= other.x;
             this.y -= other.y;
         } else {
@@ -315,7 +315,7 @@ UMath.Vec2 = class {
      * @returns {UMath.Vec2} The sum of the two elements
      */
     static add(v, other) {
-        if (typeof other === "object" || other instanceof UMath.Vec2) {
+        if (typeof other === "object") {
             return new UMath.Vec2(v.x + other.x, v.y + other.y);
         }
         return new UMath.Vec2(v.x + other, v.y + other);
@@ -331,7 +331,7 @@ UMath.Vec2 = class {
      * @returns {UMath.Vec2} The subtraction of the two elements
      */
     static sub(v, other) {
-        if (typeof other === "object" || other instanceof UMath.Vec2) {
+        if (typeof other === "object") {
             return new UMath.Vec2(v.x - other.x, v.y - other.y);
         }
         return new UMath.Vec2(v.x - other, v.y - other);
@@ -960,7 +960,7 @@ export class wCanvas {
     /**
      * Draws a shape using the specified vertices (Tries to draw only if there are 2 or more vertices specified)
      * @method
-     * @param {Array<Array<Number>>} vertices - Array of Vertices (A vertex is this kind of array [x, y])
+     * @param {Array<Array<Number>>|Array<UMath.Vec2>|Array<Vec2Object>} vertices - Array of Vertices (A vertex is this kind of array [x, y])
      * @param {PathConfig} [config] - Other options
      * @returns {undefined}
      */
@@ -972,11 +972,21 @@ export class wCanvas {
         this.context.beginPath();
 
         const firstVertex = vertices[0];
-        this.context.moveTo(firstVertex[0], firstVertex[1]);
+        const isVec2Array = !Array.isArray(firstVertex);
+
+        if (isVec2Array) {
+            this.context.moveTo(firstVertex.x, firstVertex.y);
+        } else {
+            this.context.moveTo(firstVertex[0], firstVertex[1]);
+        }
 
         for (let i = 1; i < vertices.length; i++) {
             const vertex = vertices[i];
-            this.context.lineTo(vertex[0], vertex[1]);
+            if (isVec2Array) {
+                this.context.lineTo(vertex.x, vertex.y);
+            } else {
+                this.context.lineTo(vertex[0], vertex[1]);
+            }
         }
 
         this.context.closePath();
