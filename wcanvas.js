@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.1.9";
+export const version = "0.1.10";
 
 /**
  * Generates an UUID used for all auto generated stuff from this library
@@ -63,11 +63,14 @@ export const formatString = (str, ...formats) => {
 }
 
 /**
- * A static class that provides some useful math functions
- * @class
- * @static
+ * A namespace that provides some useful math functions
+ * @namespace
  */
 export class UMath {
+
+    constructor() {
+        throw new Error("This class is supposed to be a namespace, you can't call its constructor!");
+    }
 
     /**
      * Constrains a number between the specified range
@@ -140,6 +143,251 @@ export class UMath {
      */
     static dist(x1, y1, x2, y2) {
         return Math.sqrt(UMath.distSq(x1, y1, x2, y2));
+    }
+
+}
+
+/**
+ * @typedef {Object} Vec2Object - An object representation of a 2D Vector
+ * @property {Number} x - The x component of the Vector
+ * @property {Number} y - The y component of the Vector
+ */
+
+/**
+ * A 2D Vector Class
+ * @class
+ */
+UMath.Vec2 = class {
+
+    /**
+     * @constructor
+     * @param {Number} x - The x component of the new Vector
+     * @param {Number} y - The y component of the new Vector
+     */
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * Creates a new Vector that is equal to this
+     * @method
+     * @returns {UMath.Vec2} A copy of this Vector
+     */
+    copy() {
+        return new UMath.Vec2(this.x, this.y);
+    }
+
+    /**
+     * Returns the squared magnitude of the Vector (See {@link UMath.Vec2#mag})
+     * @method
+     * @returns {Number} The squared magnitude
+     */
+    magSq() {
+        return this.x * this.x + this.y * this.y;
+    }
+
+    /**
+     * Returns the magnitude of the Vector (See {@link UMath.Vec2#magSq})
+     * @method
+     * @returns {Number} The magnitude
+     */
+    mag() {
+        return Math.sqrt(this.magSq());
+    }
+
+    /**
+     * Returns the squared distance between this and the specified Vector (See {@link UMath.Vec2#dist})
+     * @method
+     * @param {UMath.Vec2|Vec2Object} other - The other Vector
+     * @returns {Number} The squared distance between the two vectors
+     */
+    distSq(other) {
+        return UMath.distSq(this.x, this.y, other.x, other.y);
+    }
+
+    /**
+     * Returns the distance between this and the specified Vector (See {@link UMath.Vec2#distSq})
+     * @method
+     * @param {UMath.Vec2|Vec2Object} other - The other Vector
+     * @returns {Number} The distance between the two vectors
+     */
+    dist(other) {
+        return UMath.dist(this.x, this.y, other.x, other.y);
+    }
+    
+    /**
+     * Adds the specified Vector or scalar to this
+     * (See {@link UMath.Vec2.add} for a static version of this method)
+     * @method
+     * @param {Number|UMath.Vec2|Vec2Object} other - The Vector or scalar to add
+     * @returns {UMath.Vec2} this
+     */
+    add(other) {
+        if (typeof other === "object" || other instanceof UMath.Vec2) {
+            this.x += other.x;
+            this.y += other.y;
+        } else {
+            this.x += other;
+            this.y += other;   
+        }
+        return this;
+    }
+
+    /**
+     * Subtracts the specified Vector or scalar to this
+     * (See {@link UMath.Vec2.sub} for a static version of this method)
+     * @method
+     * @param {Number|UMath.Vec2|Vec2Object} other - The Vector or scalar to subtract
+     * @returns {UMath.Vec2} this
+     */
+    sub(other) {
+        if (typeof other === "object" || other instanceof UMath.Vec2) {
+            this.x -= other.x;
+            this.y -= other.y;
+        } else {
+            this.x -= other;
+            this.y -= other;   
+        }
+        return this;
+    }
+
+    /**
+     * Multiplies this by the specified scalar
+     * (See {@link UMath.Vec2.mul} for a static version of this method)
+     * @method
+     * @param {Number} other - The scalar to add
+     * @returns {UMath.Vec2} this
+     */
+    mul(scalar) {
+        this.x *= scalar;
+        this.y *= scalar;
+        return this;
+    }
+
+    /**
+     * Divides this by the specified scalar
+     * (See {@link UMath.Vec2.div} for a static version of this method)
+     * @method
+     * @param {Number} other - The scalar to add
+     * @returns {UMath.Vec2} this
+     */
+    div(scalar) {
+        this.x /= scalar;
+        this.y /= scalar;
+        return this;
+    }
+
+    /**
+     * Rotates this by the specified angle
+     * (See {@link UMath.Vec2.rotate} for a static version of this method)
+     * @method
+     * @param {Number} angle - The angle to rotate this Vector by
+     * @returns {UMath.Vec2} this
+     */
+    rotate(angle) {
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        const newX = cos * this.x - sin * this.y;
+        const newY = sin * this.x + cos * this.y;
+        this.x = newX;
+        this.y = newY;
+        return this;
+    }
+
+    /**
+     * Makes the magnitude of this Vector equal to 1
+     * (See {@link UMath.Vec2.normalize} for a static version of this method)
+     * @method
+     * @returns {UMath.Vec2} this
+     */
+    normalize() {
+        return this.div(this.mag());
+    }
+
+    /**
+     * Returns a new Vector which is the sum of the two specified elements
+     * (See {@link UMath.Vec2#add} for a non-static version of this method)
+     * @method
+     * @static
+     * @param {UMath.Vec2|Vec2Object} v - The Vector to add to
+     * @param {Number|UMath.Vec2|Vec2Object} other - The Vector or scalar to add
+     * @returns {UMath.Vec2} The sum of the two elements
+     */
+    static add(v, other) {
+        if (typeof other === "object" || other instanceof UMath.Vec2) {
+            return new UMath.Vec2(v.x + other.x, v.y + other.y);
+        }
+        return new UMath.Vec2(v.x + other, v.y + other);
+    }
+
+    /**
+     * Returns a new Vector which is the subtraction of the two specified elements
+     * (See {@link UMath.Vec2#sub} for a non-static version of this method)
+     * @method
+     * @static
+     * @param {UMath.Vec2|Vec2Object} v - The Vector to subtract from
+     * @param {Number|UMath.Vec2|Vec2Object} other - The Vector or scalar to subtract
+     * @returns {UMath.Vec2} The subtraction of the two elements
+     */
+    static sub(v, other) {
+        if (typeof other === "object" || other instanceof UMath.Vec2) {
+            return new UMath.Vec2(v.x - other.x, v.y - other.y);
+        }
+        return new UMath.Vec2(v.x - other, v.y - other);
+    }
+
+    /**
+     * Returns a new Vector which is the multiplication of the specified Vector by the specified scalar
+     * (See {@link UMath.Vec2#mul} for a non-static version of this method)
+     * @method
+     * @static
+     * @param {UMath.Vec2|Vec2Object} v - The Vector to multiply
+     * @param {Number} scalar - The scalar to multiply the Vector by
+     * @returns {UMath.Vec2} The multiplication between the specified Vector and the scalar
+     */
+    static mul(v, scalar) {
+        return new UMath.Vec2(v.x * scalar, v.y * scalar);
+    }
+
+    /**
+     * Returns a new Vector which is the division of the specified Vector by the specified scalar
+     * (See {@link UMath.Vec2#div} for a non-static version of this method)
+     * @method
+     * @static
+     * @param {UMath.Vec2|Vec2Object} v - The Vector to divide
+     * @param {Number} scalar - The scalar to divide the Vector by
+     * @returns {UMath.Vec2} The division between the specified Vector and the scalar
+     */
+    static div(v, scalar) {
+        return new UMath.Vec2(v.x / scalar, v.y / scalar);
+    }
+
+    /**
+     * Returns a new Vector equal to the specified Vector rotated by the specified angle
+     * (See {@link UMath.Vec2.rotate} for a static version of this method)
+     * @method
+     * @param {UMath.Vec2|Vec2Object} v - The Vector to rotate
+     * @param {Number} angle - The angle to rotate the specified Vector by
+     * @returns {UMath.Vec2} A new Vector equal to the specified Vector rotated by the specified angle
+     */
+    static rotate(v, angle) {
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        return new UMath.Vec2(cos * v.x - sin * v.y, sin * v.x + cos * v.y);
+    }
+
+    /**
+     * Returns a new Vector which is the specified one with a magnitude of 1
+     * (See {@link UMath.Vec2#normalize} for a non-static version of this method)
+     * @method
+     * @static
+     * @param {UMath.Vec2|Vec2Object} v - The Vector to normalize
+     * @returns {UMath.Vec2} The normalized equivalent of the specified Vector
+     */
+    static normalize(v) {
+        const magnitude = Math.sqrt(v.x * v.x + v.y * v.y);
+        return new UMath.Vec2(v.x / magnitude, v.y / magnitude);
     }
 
 }
