@@ -365,7 +365,7 @@ UMath.Vec2 = class {
 
     /**
      * Returns a new Vector equal to the specified Vector rotated by the specified angle
-     * (See {@link UMath.Vec2.rotate} for a static version of this method)
+     * (See {@link UMath.Vec2#rotate} for a non-static version of this method)
      * @method
      * @param {UMath.Vec2|Vec2Object} v - The Vector to rotate
      * @param {Number} angle - The angle to rotate the specified Vector by
