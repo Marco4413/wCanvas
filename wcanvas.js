@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.1.11";
+export const version = "0.1.12";
 
 /**
  * Generates an UUID used for all auto generated stuff from this library
@@ -442,6 +442,7 @@ UMath.Vec2 = class {
 /**
  * @typedef {Object} TextConfig - Texts' config
  * @property {"left"|"center"|"right"} [horizontalAlignment] - Where the text should be aligned horizontally
+ * @property {"top"|"center"|"bottom"} [verticalAlignment] - Where the text should be aligned vertically
  * @property {Boolean} [noStroke] - Whether or not stroke should be applied
  * @property {Boolean} [noFill] - Whether or not the shape should be filled
  * @property {Number} [maxWidth] - Text's max width
@@ -1037,18 +1038,30 @@ export class wCanvas {
      * @returns {undefined|Number} If config.returnWidth is true it returns the text's width
      */
     text(text, x, y, config = {}) {
-        const textWidth =
+        const textMeasures =
             config.returnWidth || config.horizontalAlignment === "center" || config.horizontalAlignment === "right"
-            ? this.context.measureText(text).width : undefined
+                               || config.verticalAlignment   === "center" || config.verticalAlignment   === "bottom"
+            ? this.context.measureText(text) : undefined
         ;
         
         switch (config.horizontalAlignment) {
             case "center": {
-                x -= textWidth / 2;
+                x -= textMeasures.width / 2;
                 break;
             }
             case "right": {
-                x -= textWidth;
+                x -= textMeasures.width;
+                break;
+            }
+        }
+
+        switch (config.verticalAlignment) {
+            case "center": {
+                y += (textMeasures.actualBoundingBoxAscent + textMeasures.actualBoundingBoxDescent) / 2;
+                break;
+            }
+            case "bottom": {
+                y += textMeasures.actualBoundingBoxAscent + textMeasures.actualBoundingBoxDescent;
                 break;
             }
         }
@@ -1062,7 +1075,7 @@ export class wCanvas {
         }
 
         if (config.returnWidth) {
-            return textWidth;
+            return textMeasures.width;
         }
     }
 }
