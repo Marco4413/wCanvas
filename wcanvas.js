@@ -441,6 +441,7 @@ UMath.Vec2 = class {
 
 /**
  * @typedef {Object} TextConfig - Texts' config
+ * @property {"left"|"center"|"right"} [horizontalAlignment] - Where the text should be aligned horizontally
  * @property {Boolean} [noStroke] - Whether or not stroke should be applied
  * @property {Boolean} [noFill] - Whether or not the shape should be filled
  * @property {Number} [maxWidth] - Text's max width
@@ -1036,6 +1037,22 @@ export class wCanvas {
      * @returns {undefined|Number} If config.returnWidth is true it returns the text's width
      */
     text(text, x, y, config = {}) {
+        const textWidth =
+            config.returnWidth || config.horizontalAlignment === "center" || config.horizontalAlignment === "right"
+            ? this.context.measureText(text).width : undefined
+        ;
+        
+        switch (config.horizontalAlignment) {
+            case "center": {
+                x -= textWidth / 2;
+                break;
+            }
+            case "right": {
+                x -= textWidth;
+                break;
+            }
+        }
+
         if (!config.noFill) {
             this.context.fillText(text, x, y, config.maxWidth);
         }
@@ -1045,7 +1062,7 @@ export class wCanvas {
         }
 
         if (config.returnWidth) {
-            return this.context.measureText(text).width;
+            return textWidth;
         }
     }
 }
