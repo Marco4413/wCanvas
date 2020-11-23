@@ -581,31 +581,28 @@ export class wCanvas {
         // Get the context of the created Canvas
         this.context = this.canvas.getContext("2d");
 
-
-        const defaultResize = () => {
-            // If a width and a height were given then use them as the width and height
-            if (config.width !== undefined && config.height !== undefined) {
-                this.canvas.width = config.width;
-                this.canvas.height = config.height;
-            } else {
-                // Otherwise make the canvas fullscreen
-                this.canvas.width = window.innerWidth + 1;
-                this.canvas.height = window.innerHeight + 1;
-            }
-        }
-        defaultResize();
-
-        // Add an event listener to the resize event
-        window.addEventListener("resize", (...args) => {
-            // If the user specified a callback on window resize
+        const onResize = (...args) => {
+            // If the user didn't specify a callback on window resize
             if (config.onResize === undefined) {
-                // Call the default resize function
-                defaultResize();
+                // If a width and a height were given then use them as the width and height
+                if (config.width !== undefined && config.height !== undefined) {
+                    this.canvas.width = config.width;
+                    this.canvas.height = config.height;
+                } else {
+                    // Otherwise make the canvas fullscreen
+                    this.canvas.width = window.innerWidth + 1;
+                    this.canvas.height = window.innerHeight + 1;
+                }
             } else {
                 // Call the user-specified callback
                 config.onResize(this, ...args);
             }
-        });
+        }
+
+        onResize();
+
+        // Add an event listener to the resize event
+        window.addEventListener("resize", onResize);
 
         // A negative number of FPS means "Draw every time the browser lets you"
         this.FPS = config.FPS === undefined ? -1 : config.FPS;
