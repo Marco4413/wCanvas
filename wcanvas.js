@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.1.12";
+export const version = "0.1.13";
 
 /**
  * Generates an UUID used for all auto generated stuff from this library
@@ -179,6 +179,16 @@ UMath.Vec2 = class {
     }
 
     /**
+     * Returns this Vector as a String (e.g. "(0, 0)")
+     * (See {@link UMath.Vec2.fromString} to get a Vector from a String)
+     * @method
+     * @returns {String} This Vector as a String
+     */
+    toString() {
+        return `(${this.x}, ${this.y})`;
+    }
+
+    /**
      * Returns the squared magnitude of the Vector (See {@link UMath.Vec2#mag})
      * @method
      * @returns {Number} The squared magnitude
@@ -303,6 +313,21 @@ UMath.Vec2 = class {
      */
     normalize() {
         return this.div(this.mag());
+    }
+
+    /**
+     * Returns a new Vector parsed from the specified String (of type "x,y", it removes parenthesis and extra spaces automatically)
+     * (See {@link UMath.Vec2#toString} to get a String from a Vector)
+     * @method
+     * @static
+     * @param {String} str - The String to parse
+     * @returns {UMath.Vec2} The Vector parsed from the String
+     */
+    static fromString(str) {
+        const components = str.replace(/[( )]/g, "").split(",");
+        const [x, y] = [parseInt(components[0]), parseInt(components[1])];
+
+        return new UMath.Vec2(Number.isNaN(x) ? undefined : x, Number.isNaN(y) ? undefined : y);
     }
 
     /**
