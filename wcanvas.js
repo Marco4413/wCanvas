@@ -225,6 +225,24 @@ UMath.Vec2 = class {
     dist(other) {
         return UMath.dist(this.x, this.y, other.x, other.y);
     }
+
+    /**
+     * Calculates the dot product between this and the specified Vector
+     * @param {UMath.Vec2} other - The other Vector to calculate the dot product with
+     * @returns {Number} The dot product between this and the specified Vector
+     */
+    dot(other) {
+        return this.x * other.x + this.y * other.y;
+    }
+
+    /**
+     * Calculates the Z value of the 3D cross product Vector between this and the specified Vector
+     * @param {UMath.Vec2} other - The other Vector to calculate the cross product with
+     * @returns {Number} The Z value of the 3D cross product Vector
+     */
+    cross(other) {
+        return this.x * other.y - this.y * other.x;
+    }
     
     /**
      * Adds the specified Vector or scalar to this
