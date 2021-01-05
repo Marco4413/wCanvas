@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.1.13";
+export const version = "0.1.14";
 
 /**
  * Generates an UUID used for all auto generated stuff from this library
@@ -476,6 +476,15 @@ UMath.Vec2 = class {
  */
 
 /**
+ * @typedef {Object} RectConfig - Rectangles' config
+ * @property {Boolean} [noStroke] - Whether or not stroke should be applied
+ * @property {Boolean} [noFill] - Whether or not the shape should be filled
+ * @property {Object} [rounded] - If not undefined the rectangle will be drawn as if it has round corners and its x and y will be the center of it
+ * @property {Array<Boolean>} [rounded.corners] - Corners that should be drawn (clockwise starting from the top-left one), if undefined all corners will be drawn
+ * @property {Array<Number>} [rounded.radius] - Percentage of how rounded a corner should be (1 means the whole width/height, going over 1 may result in strange shapes), if undefined it defaults to 1
+ */
+
+/**
  * @typedef {Object} PathConfig - Paths' config
  * @property {Boolean} [noStroke] - Whether or not stroke should be applied
  * @property {Boolean} [noFill] - Whether or not the shape should be filled
@@ -916,16 +925,74 @@ export class wCanvas {
      * @param {Number} y - The y coordinate where the rectangle should be drawn
      * @param {Number} w - The width of the rectangle
      * @param {Number} h - The height of the rectangle
-     * @param {ShapeConfig} [config] - Other options
+     * @param {RectConfig} [config] - Other options
      * @returns {undefined}
      */
     rect(x, y, w, h, config = {}) {
-        if (!config.noFill) {
-            this.context.fillRect(x, y, w, h);
-        }
+        if (config.rounded) {
 
-        if (!config.noStroke) {
-            this.context.strokeRect(x, y, w, h);
+            const radiusPixels = Math.min(w, h) / 2 * ( config.rounded.radius === undefined ? 1 : config.rounded.radius );
+            const corners = config.rounded.corners === undefined ? [ true, true, true, true ] : config.rounded.corners;
+    
+            const topLeftX = x - w / 2;
+            const topLeftY = y - h / 2;
+            const halfWidth = (w - radiusPixels * 2) / 2;
+            const halfHeight = (h - radiusPixels * 2) / 2;
+    
+            this.context.beginPath();
+            
+            // Corners are drawn clockwise
+            // Corners don't end at the center of the rectangle, so if only the two opposite corners are enabled the shape is going to be weird
+            // Top-left corner
+            if (corners[0]) {
+                this.context.lineTo(topLeftX, topLeftY + radiusPixels + halfHeight);
+                this.context.lineTo(topLeftX, topLeftY + radiusPixels);
+                this.context.quadraticCurveTo(topLeftX, topLeftY, topLeftX + radiusPixels, topLeftY);
+                this.context.lineTo(topLeftX + radiusPixels + halfWidth, topLeftY);
+            }
+    
+            // Top-right corner
+            if (corners[1]) {
+                this.context.lineTo(topLeftX + radiusPixels + halfWidth, topLeftY);
+                this.context.lineTo(topLeftX + radiusPixels + halfWidth * 2, topLeftY);
+                this.context.quadraticCurveTo(topLeftX + w, topLeftY, topLeftX + w, topLeftY + radiusPixels);
+                this.context.lineTo(topLeftX + w, topLeftY + radiusPixels + halfHeight);
+            }
+    
+            // Bottom-right corner
+            if (corners[2]) {
+                this.context.lineTo(topLeftX + w, topLeftY + radiusPixels + halfHeight);
+                this.context.lineTo(topLeftX + w, topLeftY + radiusPixels + halfHeight * 2);
+                this.context.quadraticCurveTo(topLeftX + w, topLeftY + h, topLeftX + radiusPixels + halfWidth * 2, topLeftY + h);
+                this.context.lineTo(topLeftX + radiusPixels + halfWidth, topLeftY + h);
+            }
+    
+            // Bottom-left corner
+            if (corners[3]) {
+                this.context.lineTo(topLeftX + radiusPixels + halfWidth, topLeftY + h);
+                this.context.lineTo(topLeftX + radiusPixels, topLeftY + h);
+                this.context.quadraticCurveTo(topLeftX, topLeftY + h, topLeftX, topLeftY + radiusPixels + halfHeight * 2);
+                this.context.lineTo(topLeftX, topLeftY + radiusPixels + halfHeight);
+            }
+    
+            this.context.closePath();
+
+            if (!config.noFill) {
+                this.context.fill();
+            }
+    
+            if (!config.noStroke) {
+                this.context.stroke();
+            }
+
+        } else {
+            if (!config.noFill) {
+                this.context.fillRect(x, y, w, h);
+            }
+    
+            if (!config.noStroke) {
+                this.context.strokeRect(x, y, w, h);
+            }
         }
     }
 
