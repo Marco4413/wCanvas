@@ -1132,7 +1132,7 @@ export class wCanvas {
      * @returns {undefined}
      */
     textSize(size = 12) {
-        this.context.font = this.context.font.replace(/\d+px/g, String(size) + "px");
+        this.context.font = this.context.font.replace(/\d*\.?\d*px/g, String(size) + "px");
     }
 
     /**
