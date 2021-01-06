@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.1.14";
+export const version = "0.1.15";
 
 /**
  * Generates an UUID used for all auto generated stuff from this library
@@ -481,7 +481,10 @@ UMath.Vec2 = class {
  * @property {Boolean} [noFill] - Whether or not the shape should be filled
  * @property {Object} [rounded] - If not undefined the rectangle will be drawn as if it has round corners and its x and y will be the center of it
  * @property {Array<Boolean>} [rounded.corners] - Corners that should be drawn (clockwise starting from the top-left one), if undefined all corners will be drawn
- * @property {Array<Number>} [rounded.radius] - Percentage of how rounded a corner should be (1 means the whole width/height, going over 1 may result in strange shapes), if undefined it defaults to 1
+ * @property {"percentage"|"pixels"} [rounded.radiusMode] - How {@link RectConfig}#rounded.radius should be handled, if undefined it defaults to "percentage".<br>
+ *  "percentage": Takes the smallest between the width and the height and uses it to calculate the radius of the corner in pixels;<br>
+ *  "pixels": It uses the specified number as the radius.
+ * @property {Number} [rounded.radius] - Its behaviour depends on {@link RectConfig}#rounded.radiusMode
  */
 
 /**
@@ -931,7 +934,9 @@ export class wCanvas {
     rect(x, y, w, h, config = {}) {
         if (config.rounded) {
 
-            const radiusPixels = Math.min(w, h) / 2 * ( config.rounded.radius === undefined ? 1 : config.rounded.radius );
+            const radiusPixels = config.rounded.radiusMode === "pixels" && config.rounded.radius !== undefined ?
+                config.rounded.radius :
+                Math.min(w, h) / 2 * ( config.rounded.radius === undefined ? 1 : config.rounded.radius );
             const corners = config.rounded.corners === undefined ? [ true, true, true, true ] : config.rounded.corners;
     
             const topLeftX = x - w / 2;
