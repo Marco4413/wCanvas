@@ -533,6 +533,189 @@
         
                 
 <div class="section-members">
+<h4 class="name" id="Alignment">Alignment</h4>
+
+
+
+
+<div class="description">
+    <p>Alignment options</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>horizontal</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>"left"</code></span>
+|
+
+<span class="param-type"><code>"center"</code></span>
+|
+
+<span class="param-type"><code>"right"</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Where the origin of the shape should be relative to it horizontally</p></td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vertical</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>"top"</code></span>
+|
+
+<span class="param-type"><code>"center"</code></span>
+|
+
+<span class="param-type"><code>"bottom"</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Where the origin of the shape should be relative to it vertically</p></td>
+        </tr>
+
+        
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line478">line 478</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><code>Object</code></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</div>
+
+            
+                
+<div class="section-members">
 <h4 class="name" id="PathConfig">PathConfig</h4>
 
 
@@ -705,7 +888,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line490">line 490</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line497">line 497</a>
     </li></ul></dd>
     
 
@@ -836,6 +1019,39 @@
             
 
             <td class="description last"><p>Whether or not the shape should be filled</p></td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>alignment</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code><a href="global.html#Alignment">Alignment</a></code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Specifies the position of the origin of the rectangle</p></td>
         </tr>
 
         
@@ -1042,7 +1258,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line478">line 478</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line484">line 484</a>
     </li></ul></dd>
     
 
@@ -1286,19 +1502,13 @@
 
         <tr>
             
-                <td class="name"><code>horizontalAlignment</code></td>
+                <td class="name"><code>alignment</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>"left"</code></span>
-|
-
-<span class="param-type"><code>"center"</code></span>
-|
-
-<span class="param-type"><code>"right"</code></span>
+<span class="param-type"><code><a href="global.html#Alignment">Alignment</a></code></span>
 
 
             
@@ -1316,46 +1526,7 @@
 
             
 
-            <td class="description last"><p>Where the text should be aligned horizontally</p></td>
-        </tr>
-
-        
-
-    
-
-        <tr>
-            
-                <td class="name"><code>verticalAlignment</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>"top"</code></span>
-|
-
-<span class="param-type"><code>"center"</code></span>
-|
-
-<span class="param-type"><code>"bottom"</code></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Where the text should be aligned vertically</p></td>
+            <td class="description last"><p>Specifies the position of the origin of the text</p></td>
         </tr>
 
         
@@ -1528,7 +1699,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line497">line 497</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line504">line 504</a>
     </li></ul></dd>
     
 
@@ -2647,7 +2818,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Jan 06 2021 15:31:44 GMT+0100 (GMT+01:00) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Fri Jan 08 2021 00:37:42 GMT+0100 (GMT+01:00) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
