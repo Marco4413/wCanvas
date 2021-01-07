@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.1.15";
+export const version = "0.2.0";
 
 /**
  * Generates an UUID used for all auto generated stuff from this library
@@ -476,9 +476,16 @@ UMath.Vec2 = class {
  */
 
 /**
+ * @typedef {Object} Alignment - Alignment options
+ * @property {"left"|"center"|"right"} [horizontal] - Where the origin of the shape should be relative to it horizontally
+ * @property {"top"|"center"|"bottom"} [vertical] - Where the origin of the shape should be relative to it vertically
+ */
+
+/**
  * @typedef {Object} RectConfig - Rectangles' config
  * @property {Boolean} [noStroke] - Whether or not stroke should be applied
  * @property {Boolean} [noFill] - Whether or not the shape should be filled
+ * @property {Alignment} [alignment] - Specifies the position of the origin of the rectangle
  * @property {Object} [rounded] - If not undefined the rectangle will be drawn as if it has round corners and its x and y will be the center of it
  * @property {Array<Boolean>} [rounded.corners] - Corners that should be drawn (clockwise starting from the top-left one), if undefined all corners will be drawn
  * @property {"percentage"|"pixels"} [rounded.radiusMode] - How {@link RectConfig}#rounded.radius should be handled, if undefined it defaults to "percentage".<br>
@@ -496,8 +503,7 @@ UMath.Vec2 = class {
 
 /**
  * @typedef {Object} TextConfig - Texts' config
- * @property {"left"|"center"|"right"} [horizontalAlignment] - Where the text should be aligned horizontally
- * @property {"top"|"center"|"bottom"} [verticalAlignment] - Where the text should be aligned vertically
+ * @property {Alignment} [alignment] - Specifies the position of the origin of the text
  * @property {Boolean} [noStroke] - Whether or not stroke should be applied
  * @property {Boolean} [noFill] - Whether or not the shape should be filled
  * @property {Number} [maxWidth] - Text's max width
@@ -932,15 +938,38 @@ export class wCanvas {
      * @returns {undefined}
      */
     rect(x, y, w, h, config = {}) {
+        const alignmentSettings = config.alignment === undefined ? {} : config.alignment;
+        switch (alignmentSettings.horizontal) {
+            case "center": {
+                x -= w / 2;
+                break;
+            }
+            case "right": {
+                x -= w;
+                break;
+            }
+        }
+
+        switch (alignmentSettings.vertical) {
+            case "center": {
+                y -= h / 2;
+                break;
+            }
+            case "top": {
+                y -= h;
+                break;
+            }
+        }
+
         if (config.rounded) {
+            // Afraid of bind's performance, kept just in case I change my mind
+            // const goTo = (config.noFill ? this.context.moveTo : this.context.lineTo).bind(this.context);
 
             const radiusPixels = config.rounded.radiusMode === "pixels" && config.rounded.radius !== undefined ?
                 config.rounded.radius :
                 Math.min(w, h) / 2 * ( config.rounded.radius === undefined ? 1 : config.rounded.radius );
             const corners = config.rounded.corners === undefined ? [ true, true, true, true ] : config.rounded.corners;
     
-            const topLeftX = x - w / 2;
-            const topLeftY = y - h / 2;
             const halfWidth = (w - radiusPixels * 2) / 2;
             const halfHeight = (h - radiusPixels * 2) / 2;
     
@@ -950,34 +979,50 @@ export class wCanvas {
             // Corners don't end at the center of the rectangle, so if only the two opposite corners are enabled the shape is going to be weird
             // Top-left corner
             if (corners[0]) {
-                this.context.lineTo(topLeftX, topLeftY + radiusPixels + halfHeight);
-                this.context.lineTo(topLeftX, topLeftY + radiusPixels);
-                this.context.quadraticCurveTo(topLeftX, topLeftY, topLeftX + radiusPixels, topLeftY);
-                this.context.lineTo(topLeftX + radiusPixels + halfWidth, topLeftY);
+                if (config.noFill) {
+                    this.context.moveTo(x, y + radiusPixels + halfHeight);
+                } else {
+                    this.context.lineTo(x, y + radiusPixels + halfHeight);
+                }
+                this.context.lineTo(x, y + radiusPixels);
+                this.context.quadraticCurveTo(x, y, x + radiusPixels, y);
+                this.context.lineTo(x + radiusPixels + halfWidth, y);
             }
     
             // Top-right corner
             if (corners[1]) {
-                this.context.lineTo(topLeftX + radiusPixels + halfWidth, topLeftY);
-                this.context.lineTo(topLeftX + radiusPixels + halfWidth * 2, topLeftY);
-                this.context.quadraticCurveTo(topLeftX + w, topLeftY, topLeftX + w, topLeftY + radiusPixels);
-                this.context.lineTo(topLeftX + w, topLeftY + radiusPixels + halfHeight);
+                if (config.noFill) {
+                    this.context.moveTo(x + radiusPixels + halfWidth, y);
+                } else {
+                    this.context.lineTo(x + radiusPixels + halfWidth, y);
+                }
+                this.context.lineTo(x + radiusPixels + halfWidth * 2, y);
+                this.context.quadraticCurveTo(x + w, y, x + w, y + radiusPixels);
+                this.context.lineTo(x + w, y + radiusPixels + halfHeight);
             }
     
             // Bottom-right corner
             if (corners[2]) {
-                this.context.lineTo(topLeftX + w, topLeftY + radiusPixels + halfHeight);
-                this.context.lineTo(topLeftX + w, topLeftY + radiusPixels + halfHeight * 2);
-                this.context.quadraticCurveTo(topLeftX + w, topLeftY + h, topLeftX + radiusPixels + halfWidth * 2, topLeftY + h);
-                this.context.lineTo(topLeftX + radiusPixels + halfWidth, topLeftY + h);
+                if (config.noFill) {
+                    this.context.moveTo(x + w, y + radiusPixels + halfHeight);
+                } else {
+                    this.context.lineTo(x + w, y + radiusPixels + halfHeight);
+                }
+                this.context.lineTo(x + w, y + radiusPixels + halfHeight * 2);
+                this.context.quadraticCurveTo(x + w, y + h, x + radiusPixels + halfWidth * 2, y + h);
+                this.context.lineTo(x + radiusPixels + halfWidth, y + h);
             }
     
             // Bottom-left corner
             if (corners[3]) {
-                this.context.lineTo(topLeftX + radiusPixels + halfWidth, topLeftY + h);
-                this.context.lineTo(topLeftX + radiusPixels, topLeftY + h);
-                this.context.quadraticCurveTo(topLeftX, topLeftY + h, topLeftX, topLeftY + radiusPixels + halfHeight * 2);
-                this.context.lineTo(topLeftX, topLeftY + radiusPixels + halfHeight);
+                if (config.noFill) {
+                    this.context.moveTo(x + radiusPixels + halfWidth, y + h);
+                } else {
+                    this.context.lineTo(x + radiusPixels + halfWidth, y + h);
+                }
+                this.context.lineTo(x + radiusPixels, y + h);
+                this.context.quadraticCurveTo(x, y + h, x, y + radiusPixels + halfHeight * 2);
+                this.context.lineTo(x, y + radiusPixels + halfHeight);
             }
     
             this.context.closePath();
@@ -1150,13 +1195,14 @@ export class wCanvas {
      * @returns {undefined|Number} If config.returnWidth is true it returns the text's width
      */
     text(text, x, y, config = {}) {
+        const alignmentSettings = config.alignment === undefined ? {} : config.alignment;
         const textMeasures =
-            config.returnWidth || config.horizontalAlignment === "center" || config.horizontalAlignment === "right"
-                               || config.verticalAlignment   === "center" || config.verticalAlignment   === "bottom"
+            config.returnWidth || alignmentSettings.horizontal === "center" || alignmentSettings.horizontal === "right"
+                               || alignmentSettings.vertical   === "center" || alignmentSettings.vertical   === "top"
             ? this.context.measureText(text) : undefined
         ;
         
-        switch (config.horizontalAlignment) {
+        switch (alignmentSettings.horizontal) {
             case "center": {
                 x -= textMeasures.width / 2;
                 break;
@@ -1167,13 +1213,13 @@ export class wCanvas {
             }
         }
 
-        switch (config.verticalAlignment) {
-            case "center": {
-                y += (textMeasures.actualBoundingBoxAscent + textMeasures.actualBoundingBoxDescent) / 2;
+        switch (alignmentSettings.vertical) {
+            case "top": {
+                y += textMeasures.actualBoundingBoxAscent + textMeasures.actualBoundingBoxDescent;
                 break;
             }
-            case "bottom": {
-                y += textMeasures.actualBoundingBoxAscent + textMeasures.actualBoundingBoxDescent;
+            case "center": {
+                y += (textMeasures.actualBoundingBoxAscent + textMeasures.actualBoundingBoxDescent) / 2;
                 break;
             }
         }
