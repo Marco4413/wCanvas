@@ -20,7 +20,7 @@ window.addEventListener("load", () => {
             canvas.scale(2, 2);
             
             canvas.fill(0, 0, 255);
-            canvas.rect(50, 50, 100, 100, { "noStroke": true, "rounded": { "radius": 0.5 } });
+            canvas.rect(0, 0, 100, 100, { "noStroke": true, "rounded": { "radius": 0.5 } });
 
             canvas.fill();
             canvas.ellipse(50, 50, 50, undefined, { "noStroke": true });
@@ -34,7 +34,7 @@ window.addEventListener("load", () => {
             canvas.textSize(20);
             const textWidth = canvas.text(
                 "This is a cool text", 100, 100,
-                { "returnWidth": true }
+                { "returnWidth": true, "alignment": { "vertical": "bottom" } }
             );
 
             canvas.path(
