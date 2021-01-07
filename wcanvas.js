@@ -1024,10 +1024,9 @@ export class wCanvas {
                 this.context.quadraticCurveTo(x, y + h, x, y + radiusPixels + halfHeight * 2);
                 this.context.lineTo(x, y + radiusPixels + halfHeight);
             }
-    
-            this.context.closePath();
 
             if (!config.noFill) {
+                this.context.closePath();
                 this.context.fill();
             }
     
