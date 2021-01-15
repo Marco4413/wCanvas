@@ -32,7 +32,48 @@
  * @constant
  * @type {String}
  */
-export const version = "0.2.1";
+export const version = "0.2.2";
+
+/**
+ * Used to compare two versions of the library
+ * @function
+ * @param {String} v1 - The version that the return value is based on
+ * @param {String} v2 - The version to compare the first one to
+ * @returns {Number}
+ *  - -1 if v1 is lower than v2;
+ *  - 0 if v1 is equal to v2;
+ *  - 1 if v1 is higher than v2.
+ */
+export const compVersions = (v1, v2) => {
+    // If the two versions are equal then they must be equal
+    // (Who would have thought)
+    if (v1 === v2) { return 0; }
+
+    // Splitting the two versions and parsing their numbers
+    const val1 = v1.split(".").map(v => Number(v));
+    const val2 = v2.split(".").map(v => Number(v));
+
+    // Getting the max length of the versions
+    const maxLen = Math.max(val1.length, val2.length);
+    // Looping from the most significant digit to the least
+    for (let i = 0; i < maxLen; i++) {
+        const num1 = val1[i] === undefined ? 0 : val1[i];
+        const num2 = val2[i] === undefined ? 0 : val2[i];
+
+        // If this digit is higher then it's a newer version
+        if (num1 > num2) {
+            return 1;
+        
+        // Else the opposite
+        } else if (num1 < num2) {
+            return -1;
+        }
+    }
+
+    // If it didn't return then the versions should be equal
+    // Even though we should never get down here
+    return 0;
+}
 
 /**
  * Generates an UUID used for all auto generated stuff from this library
