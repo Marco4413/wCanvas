@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.2.2";
+export const version = "0.2.3";
 
 /**
  * Used to compare two versions of the library
@@ -802,7 +802,7 @@ function fillRGBA(rgba) {
             return [ rgba[0], rgba[1], rgba[2], 255 ];
         }
         case 4: {
-            return rgba;
+            return rgba.slice();
         }
         default: {
             throw new InvalidColor(rgba, "rgba");
@@ -877,25 +877,22 @@ export class Color {
             }
         }
 
-        switch (this.value.length) {
-            case 1: {
-                const grayScale = this.value[0];
-                return [ grayScale, grayScale, grayScale, 255 ];
+        return fillRGBA(this.value);
+    }
+
+    /**
+     * Returns Color#value as a valid hex color
+     * @method
+     * @returns {String} Color#value as a valid hex color
+     * @throws {InvalidColor}
+     */
+    toHex() {
+        return this.toRGBA().map(
+            v => {
+                const hex = v.toString(16);
+                return hex.length === 1 ? "0" + hex : hex;
             }
-            case 2: {
-                const grayScale = this.value[0];
-                return [ grayScale, grayScale, grayScale, this.value[1] ];
-            }
-            case 3: {
-                return [ this.value[0], this.value[1], this.value[2], 255 ];
-            }
-            case 4: {
-                return this.value;
-            }
-            default: {
-                throw new InvalidColor(this.value, "rgba");
-            }
-        }
+        );
     }
 
     /**
