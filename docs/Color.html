@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>UMath - Documentation</title>
+    <title>Color - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">UMath</h1>
+    <h1 class="page-title">Color</h1>
     
 
     
@@ -42,10 +42,10 @@
 <header>
     
         <h2>
-        UMath
+        Color
         </h2>
         
-            <div class="class-description"><p>A namespace that provides some useful math functions</p></div>
+            <div class="class-description"><p>Holds a color that can be retrieved with Color#toRGBA</p></div>
         
     
 </header>
@@ -54,8 +54,22 @@
     <div class="container-overview">
     
         
+<div class="section-method">
 
-        
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="Color"><span class="type-signature"></span>new Color<span class="signature">(color)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
 
 
 <dl class="details">
@@ -87,7 +101,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line69">line 69</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line776">line 776</a>
     </li></ul></dd>
     
 
@@ -99,7 +113,108 @@
 </dl>
 
 
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
         
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>String</code></span>
+|
+
+<span class="param-type"><code>Number</code></span>
+|
+
+<span class="param-type"><code><a href="global.html#RGBAColor">RGBAColor</a></code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>Can either be a CSS, Hex or RGBA Color</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-throws">
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc">
+    
+        
+<span class="param-type"><code><a href="InvalidColor.html">InvalidColor</a></code></span>
+
+
+    
+    </div>
+
+
+    
+</div>
+
+
+
+
+
+
+
+</div>
     
     </div>
 
@@ -111,7 +226,7 @@
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
-            <dt><a href="UMath.Vec2.html">Vec2</a></dt>
+            <dt><a href="Color.html">Color</a></dt>
             <dd></dd>
         </dl>
     
@@ -119,14 +234,85 @@
      
 
     
-        <h3 class="subsection-title">Namespaces</h3>
 
-        <dl>
-            <dt><a href="UMath.html">UMath</a></dt>
-            <dd></dd>
-        </dl>
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="value"><span class="type-signature"></span>value<span class="type-signature"> :Array.&lt;Number></span></h4>
+
+
+
+
+<div class="description">
+    <p>The currently stored color</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
     
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line783">line 783</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><code>Array.&lt;Number></code></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</div>
+
+        
     
 
     
@@ -139,7 +325,7 @@
     
 
     
-    <h4 class="name" id=".constrain"><span class="type-signature">(static) </span>constrain<span class="signature">(val, start, end)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    <h4 class="name" id=".HexToRGBA"><span class="type-signature">(static) </span>HexToRGBA<span class="signature">(hex)</span><span class="type-signature"> &rarr; {<a href="global.html#RGBAColor">RGBAColor</a>}</span></h4>
     
 
     
@@ -147,7 +333,7 @@
 
 
 <div class="description">
-    <p>Constrains a number between the specified range</p>
+    <p>Converts the specified hex color to an RGBA one</p>
 </div>
 
 
@@ -183,7 +369,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line84">line 84</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line868">line 868</a>
     </li></ul></dd>
     
 
@@ -227,13 +413,13 @@
 
         <tr>
             
-                <td class="name"><code>val</code></td>
+                <td class="name"><code>hex</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>Number</code></span>
+<span class="param-type"><code>String</code></span>
 
 
             
@@ -244,59 +430,7 @@
             
 
             <td class="description last">
-                <p>The number to be constrained</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>start</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The minimum number that the specified one can be</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>end</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The maximum number that the specified one can be</p>
+                <p>The hex color to convert</p>
                 
             </td>
         </tr>
@@ -318,6 +452,24 @@
 
 
 
+<div class="section-throws">
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc">
+    
+        
+<span class="param-type"><code><a href="InvalidColor.html">InvalidColor</a></code></span>
+
+
+    
+    </div>
+
+
+    
+</div>
+
 
 
 <div class="section-returns">
@@ -331,7 +483,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><code>Number</code></span>
+<span class="param-type"><code><a href="global.html#RGBAColor">RGBAColor</a></code></span>
 
 
     </dd>
@@ -339,7 +491,7 @@
 
 
 <div class="param-desc">
-    <p>The constrained number</p>
+    <p>The specified hex color as an RGBA one</p>
 </div>
 
     
@@ -357,7 +509,7 @@
     
 
     
-    <h4 class="name" id=".dist"><span class="type-signature">(static) </span>dist<span class="signature">(x1, y1, x2, y2)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    <h4 class="name" id=".NameToRGBA"><span class="type-signature">(static) </span>NameToRGBA<span class="signature">(name)</span><span class="type-signature"> &rarr; {<a href="global.html#RGBAColor">RGBAColor</a>}</span></h4>
     
 
     
@@ -365,7 +517,7 @@
 
 
 <div class="description">
-    <p>Returns the distance between the specified points (See: <a href="UMath.html#.distSq"><code>UMath.distSq</code></a>)</p>
+    <p>Converts the specified color to an RGBA one</p>
 </div>
 
 
@@ -401,7 +553,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line144">line 144</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line903">line 903</a>
     </li></ul></dd>
     
 
@@ -445,13 +597,13 @@
 
         <tr>
             
-                <td class="name"><code>x1</code></td>
+                <td class="name"><code>name</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>Number</code></span>
+<span class="param-type"><code>String</code></span>
 
 
             
@@ -462,85 +614,7 @@
             
 
             <td class="description last">
-                <p>The x of the first point</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>y1</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The y of the first point</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>x2</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The x of the second point</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>y2</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The y of the second point</p>
+                <p>The name of the color to convert</p>
                 
             </td>
         </tr>
@@ -562,6 +636,24 @@
 
 
 
+<div class="section-throws">
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc">
+    
+        
+<span class="param-type"><code><a href="InvalidColor.html">InvalidColor</a></code></span>
+
+
+    
+    </div>
+
+
+    
+</div>
+
 
 
 <div class="section-returns">
@@ -575,7 +667,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><code>Number</code></span>
+<span class="param-type"><code><a href="global.html#RGBAColor">RGBAColor</a></code></span>
 
 
     </dd>
@@ -583,7 +675,7 @@
 
 
 <div class="param-desc">
-    <p>The distance between the two points</p>
+    <p>The specified color as an RGBA one</p>
 </div>
 
     
@@ -601,7 +693,7 @@
     
 
     
-    <h4 class="name" id=".distSq"><span class="type-signature">(static) </span>distSq<span class="signature">(x1, y1, x2, y2)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    <h4 class="name" id="toRGBA"><span class="type-signature"></span>toRGBA<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#RGBAColor">RGBAColor</a>}</span></h4>
     
 
     
@@ -609,7 +701,7 @@
 
 
 <div class="description">
-    <p>Returns the squared distance between two points (See: <a href="UMath.html#.dist"><code>UMath.dist</code></a>)</p>
+    <p>Returns Color#value as a valid RGBA color</p>
 </div>
 
 
@@ -645,7 +737,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line128">line 128</a>
+        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line832">line 832</a>
     </li></ul></dd>
     
 
@@ -664,147 +756,35 @@
 
 
 
-    <h5>Parameters:</h5>
-    
 
-<table class="params">
-    <thead>
-    <tr>
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-throws">
+<h5>Throws:</h5>
+
         
-        <th>Name</th>
+
+    <div class="param-desc">
+    
         
+<span class="param-type"><code><a href="InvalidColor.html">InvalidColor</a></code></span>
 
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>x1</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The x of the first point</p>
-                
-            </td>
-        </tr>
 
     
+    </div>
 
-        <tr>
-            
-                <td class="name"><code>y1</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The y of the first point</p>
-                
-            </td>
-        </tr>
 
     
-
-        <tr>
-            
-                <td class="name"><code>x2</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The x of the second point</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>y2</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The y of the second point</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
+</div>
 
 
 
@@ -819,7 +799,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><code>Number</code></span>
+<span class="param-type"><code><a href="global.html#RGBAColor">RGBAColor</a></code></span>
 
 
     </dd>
@@ -827,549 +807,7 @@
 
 
 <div class="param-desc">
-    <p>The squared distance between the two points</p>
-</div>
-
-    
-</div>
-
-
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    
-    <h4 class="name" id=".lerp"><span class="type-signature">(static) </span>lerp<span class="signature">(val, target, perc)</span><span class="type-signature"> &rarr; {Number}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Linearly interpolates the specified number to the specified target</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line97">line 97</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>val</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The number to interpolate</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>target</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The target of the specified value</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>perc</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>How near value should be to target [0; 1]</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Number</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>The interpolated value</p>
-</div>
-
-    
-</div>
-
-
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    
-    <h4 class="name" id=".map"><span class="type-signature">(static) </span>map<span class="signature">(val, start1, end1, start2, end2, constrain)</span><span class="type-signature"> &rarr; {Number}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Maps the specified value that is in the range [start1; end1] to the new range [start2; end2]</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wcanvas.js.html">wcanvas.js</a>, <a href="wcanvas.js.html#line113">line 113</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>val</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">
-                <p>The value to be mapped</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>start1</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">
-                <p>The start of the value's range</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>end1</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">
-                <p>The end of the value's range</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>start2</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">
-                <p>The start of the value's new range</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>end2</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Number</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">
-                <p>The end of the value's new range</p>
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>constrain</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Boolean</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">
-                <p>Whether or not the mapped value should be contrained to the new range</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Number</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    <p>The mapped value</p>
+    <p>Color#value as a valid RGBA color</p>
 </div>
 
     
