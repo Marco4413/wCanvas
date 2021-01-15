@@ -14,7 +14,7 @@ window.addEventListener("load", () => {
         "onDraw": (canvas, deltaTime) => {
             console.log("Frame Time: " + deltaTime);
 
-            canvas.backgroundCSS("black");
+            canvas.background(new wcanvas.Color("black"));
             canvas.translate(100 * Math.SQRT2, 0);
             canvas.rotate(Math.PI / 4);
             canvas.scale(2, 2);
