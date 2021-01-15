@@ -28,7 +28,7 @@
         "template": "./minami",
         "encoding": "utf8",
         "destination": "./docs/",
-        "private": true,
+        "private": false,
         "recurse": false
     }
 }
