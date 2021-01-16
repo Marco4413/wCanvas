@@ -555,7 +555,7 @@ UMath.Vec2 = class {
  */
 
 /**
- * @typedef {Array<Number>} RGBAColor - An RGB Color with Alpha (An Array of 4 Numbers)
+ * @typedef {Array<Number>} RGBColor - An RGB Color that could include Alpha (An Array of 3/4 Numbers)
  */
 
 /**
@@ -781,37 +781,49 @@ const cssColors = {
 };
 
 /**
- * Used internally to fill Color#value in Color#toRGBA
- * and to complete colors from Color.HexToRGBA
+ * Used internally to fill Color#value in Color#toRGB
+ * and to complete colors from Color.HexToRGB
  * @private
- * @param {Array<Number>} rgba - An incomplete RGBA color
- * @returns {RGBAColor} The complete RGBA equivalent to the one specified
+ * @default
+ * @param {Array<Number>} rgb - An incomplete RGB color
+ * @param {Boolean} [includeAlpha] - Whether or not to include Alpha in the return value
+ * @returns {RGBColor} The complete RGB equivalent to the one specified
  * @throws {InvalidColor}
  */
-function fillRGBA(rgba) {
-    switch (rgba.length) {
+function fillRGB(rgb, includeAlpha = true) {
+    switch (rgb.length) {
         case 1: {
-            const grayScale = rgba[0];
-            return [ grayScale, grayScale, grayScale, 255 ];
+            const grayScale = rgb[0];
+            rgb = [ grayScale, grayScale, grayScale, 255 ];
+            break;
         }
         case 2: {
-            const grayScale = rgba[0];
-            return [ grayScale, grayScale, grayScale, rgba[1] ];
+            const grayScale = rgb[0];
+            rgb = [ grayScale, grayScale, grayScale, rgb[1] ];
+            break;
         }
         case 3: {
-            return [ rgba[0], rgba[1], rgba[2], 255 ];
+            rgb = [ rgb[0], rgb[1], rgb[2], 255 ];
+            break;
         }
         case 4: {
-            return rgba.slice();
+            rgb = rgb.slice();
+            break;
         }
         default: {
-            throw new InvalidColor(rgba, "rgba");
+            throw new InvalidColor(rgb, "rgba");
         }
     }
+
+    if (!includeAlpha) {
+        // If we don't need the alpha we pop it from the Array
+        rgb.pop();
+    }
+    return rgb;
 }
 
 /**
- * Holds a color that can be retrieved with Color#toRGBA
+ * Holds a color that can be retrieved with Color#toRGB
  * @class
  */
 export class Color {
@@ -825,15 +837,15 @@ export class Color {
 
     /**
      * @constructor
-     * @param {String|Number|RGBAColor} color - Can either be a CSS, Hex or RGBA Color
+     * @param {String|Number|RGBColor} color - Can either be a CSS, Hex or RGB Color
      * @throws {InvalidColor}
      */
     constructor(color) {
         if (typeof color === "string") {
             if (color.startsWith("#")) {
-                this.value = Color.HexToRGBA(color);
+                this.value = Color.HexToRGB(color, true);
             } else {
-                this.value = Color.NameToRGBA(color);
+                this.value = Color.NameToRGB(color, true);
             }
 
             return;
@@ -865,29 +877,33 @@ export class Color {
     }
 
     /**
-     * Returns Color#value as a valid RGBA color
+     * Returns Color#value as a valid RGB color
      * @method
-     * @returns {RGBAColor} Color#value as a valid RGBA color
+     * @default
+     * @param {Boolean} [includeAlpha] - Whether or not to include Alpha in the return value
+     * @returns {RGBColor} Color#value as a valid RGB color
      * @throws {InvalidColor}
      */
-    toRGBA() {
+    toRGB(includeAlpha = true) {
         for (let i = 0; i < this.value.length; i++) {
             if (typeof this.value[i] !== "number" || this.value[i] < 0 || this.value[i] > 255) {
                 throw new InvalidColor(this.value, "rgba");
             }
         }
 
-        return fillRGBA(this.value);
+        return fillRGB(this.value, includeAlpha);
     }
 
     /**
      * Returns Color#value as a valid hex color
      * @method
+     * @default
+     * @param {Boolean} [includeAlpha] - Whether or not to include Alpha in the return value
      * @returns {String} Color#value as a valid hex color
      * @throws {InvalidColor}
      */
-    toHex() {
-        return this.toRGBA().map(
+    toHex(includeAlpha = true) {
+        return this.toRGB(includeAlpha).map(
             v => {
                 const hex = v.toString(16);
                 return hex.length === 1 ? "0" + hex : hex;
@@ -896,14 +912,26 @@ export class Color {
     }
 
     /**
-     * Converts the specified hex color to an RGBA one
+     * Returns a copy of this Color
      * @method
-     * @static
-     * @param {String} hex - The hex color to convert
-     * @returns {RGBAColor} The specified hex color as an RGBA one
+     * @returns {Color} A copy of this Color
      * @throws {InvalidColor}
      */
-    static HexToRGBA(hex) {
+    copy() {
+        return new Color(this.value);
+    }
+
+    /**
+     * Converts the specified hex color to an RGB one
+     * @method
+     * @static
+     * @default
+     * @param {String} hex - The hex color to convert
+     * @param {Boolean} [includeAlpha] - Whether or not to include Alpha in the return value
+     * @returns {RGBColor} The specified hex color as an RGB one
+     * @throws {InvalidColor}
+     */
+    static HexToRGB(hex, includeAlpha = true) {
 
         // NOTE: If this function throws an InvalidColor Error of type "rgba" then something went wrong
 
@@ -914,13 +942,13 @@ export class Color {
             // "#f", "#f0f", "#f0f0"
             if (hex.length >= 1 && hex.length <= 4 && hex.length !== 2) {
                 const color = hex.match(/[0-f]{1}/g).map(v => parseInt(v, 16) / 15 * 255);
-                return fillRGBA(color);
+                return fillRGB(color, includeAlpha);
 
             // "#gg", "#RRGGBB", "#RRGGBBAA"
             // "#ff", "#ff00ff", "#ff00ff00"
             } else if (hex.length === 2 || hex.length === 6 || hex.length === 8) {
                 const color = hex.match(/[0-f]{2}/g).map(v => parseInt(v, 16));
-                return fillRGBA(color);
+                return fillRGB(color, includeAlpha);
 
             }
 
@@ -931,16 +959,18 @@ export class Color {
     }
     
     /**
-     * Converts the specified color to an RGBA one
+     * Converts the specified color to an RGB one
      * @method
      * @static
+     * @default
      * @param {String} name - The name of the color to convert
-     * @returns {RGBAColor} The specified color as an RGBA one
+     * @param {Boolean} [includeAlpha] - Whether or not to include Alpha in the return value
+     * @returns {RGBColor} The specified color as an RGB one
      * @throws {InvalidColor}
      */
-    static NameToRGBA(name) {
+    static NameToRGB(name, includeAlpha = true) {
         try {
-            return Color.HexToRGBA(cssColors[name.toLowerCase()]);
+            return Color.HexToRGB(cssColors[name.toLowerCase()], includeAlpha);
         } catch (err) {
             throw new InvalidColor(name, "css");
         }
@@ -1251,7 +1281,7 @@ export class wCanvas {
         if (typeof r === "number") {
             this.context.fillStyle = "rgb(" + [r, g, b].join(", ") + ")";
         } else {
-            this.context.fillStyle = "rgba(" + r.toRGBA().join(", ") + ")";
+            this.context.fillStyle = "rgba(" + r.toRGB(true).join(", ") + ")";
         }
     }
 
@@ -1268,7 +1298,7 @@ export class wCanvas {
         if (typeof r === "number") {
             this.context.strokeStyle = "rgb(" + [r, g, b].join(", ") + ")";
         } else {
-            this.context.strokeStyle = "rgba(" + r.toRGBA().join(", ") + ")";
+            this.context.strokeStyle = "rgba(" + r.toRGB(true).join(", ") + ")";
         }
     }
 
