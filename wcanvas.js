@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.2.4";
+export const version = "0.2.5";
 
 /**
  * Used to compare two versions of the library
@@ -559,6 +559,12 @@ UMath.Vec2 = class {
  */
 
 /**
+ * @typedef {Object} ColorType - An Object containing info about a Color's type (Used for {@link Color.getType})
+ * @property {"rgb"|"hex"|"css"|"grayscale"|"unknown"} type - The type of the Color
+ * @property {Boolean} isValid - Whether or not the Color is valid
+ */
+
+/**
  * Stores font informations (To be used with {@link wCanvas#textFont})
  * @class
  */
@@ -614,7 +620,7 @@ export class InvalidColor extends Error {
     /**
      * @constructor
      * @param {any} color - The color that generated this error
-     * @param {"rgb"|"hex"|"css"|"any"} type - The type of the color expected
+     * @param {"rgb"|"hex"|"css"|"grayscale"|"any"} type - The type of the color expected
      */
     constructor(color, type) {
         super(
@@ -785,10 +791,10 @@ const _Color_CSSToHex = {
  * @private
  */
 const _Color_hexToCSS = { }; { Object.keys(_Color_CSSToHex).forEach(k => _Color_hexToCSS[_Color_CSSToHex[k]] = k); }
-window._Color_hexToCSS = _Color_hexToCSS;
+
 /**
- * Used internally to fill Color#value in Color#toRGB
- * and to complete colors from Color.HexToRGB
+ * Used internally to fill {@link Color#value} in {@link Color#toRGB}
+ * and to complete colors from {@link Color.HexToRGB}
  * @private
  * @default
  * @param {Array<Number>} rgb - An incomplete RGB color
@@ -829,7 +835,7 @@ function fillRGB(rgb, includeAlpha = true) {
 }
 
 /**
- * Holds a color that can be retrieved with Color#toRGB
+ * Holds a color that can be retrieved with {@link Color#toRGB}
  * @class
  */
 export class Color {
@@ -847,47 +853,54 @@ export class Color {
      * @throws {InvalidColor}
      */
     constructor(color) {
-        if (typeof color === "string") {
-            if (color.startsWith("#")) {
-                this.value = Color.HexToRGB(color, true);
-            } else {
-                this.value = Color.CSSToRGB(color, true);
-            }
 
-            return;
+        const colorType = Color.getType(color);
 
-        } else if (typeof color === "number" && color >= 0 && color <= 255) {
-            // Grayscale
-            this.value = [ color, color, color, 255 ];
-
-            return;
-
-        } else if (color instanceof Array && color.length >= 1 && color.length <= 4) {
-            let isValid = true;
-            for (let i = 0; i < color.length; i++) {
-                if (typeof color[i] !== "number" || color[i] < 0 || color[i] > 255) {
-                    isValid = false;
-                    break;
+        switch (colorType.type) {
+            case "rgb": {
+                if (colorType.isValid) {
+                    this.value = fillRGB(color, true);
+                } else {
+                    throw new InvalidColor(color, "rgb");
                 }
+                break;
             }
-
-            if (isValid) {
-                this.value = color;
-                return;
+            case "hex": {
+                if (colorType.isValid) {
+                    this.value = Color.HexToRGB(color, true);
+                } else {
+                    throw new InvalidColor(color, "hex");
+                }
+                break;
             }
-
-            throw new InvalidColor(color, "rgb");
+            case "css": {
+                if (colorType.isValid) {
+                    this.value = Color.CSSToRGB(color, true);
+                } else {
+                    throw new InvalidColor(color, "css");
+                }
+                break;
+            }
+            case "grayscale": {
+                if (colorType.isValid) {
+                    this.value = [ color, color, color, 255 ];
+                } else {
+                    throw new InvalidColor(color, "grayscale");
+                }
+                break;
+            }
+            default: {
+                throw new InvalidColor(color, "any");
+            }
         }
-
-        throw new InvalidColor(color, "any");
     }
 
     /**
-     * Returns Color#value as a valid RGB color
+     * Returns {@link Color#value} as a valid RGB color
      * @method
      * @default
      * @param {Boolean} [includeAlpha] - Whether or not to include Alpha in the return value
-     * @returns {RGBColor} Color#value as a valid RGB color
+     * @returns {RGBColor} {@link Color#value} as a valid RGB color
      * @throws {InvalidColor}
      */
     toRGB(includeAlpha = true) {
@@ -901,11 +914,11 @@ export class Color {
     }
 
     /**
-     * Returns Color#value as a valid hex color
+     * Returns {@link Color#value} as a valid hex color
      * @method
      * @default
      * @param {Boolean} [includeAlpha] - Whether or not to include Alpha in the return value
-     * @returns {String} Color#value as a valid hex color
+     * @returns {String} {@link Color#value} as a valid hex color
      * @throws {InvalidColor}
      */
     toHex(includeAlpha = true) {
@@ -918,9 +931,9 @@ export class Color {
     }
 
     /**
-     * Returns Color#value as a CSS color
+     * Returns {@link Color#value} as a CSS color
      * @method
-     * @returns {String|undefined} Color#value as a CSS color
+     * @returns {String|undefined} {@link Color#value} as a CSS color
      * @throws {InvalidColor}
      */
     toCSS() {
@@ -990,6 +1003,61 @@ export class Color {
         } catch (err) {
             throw new InvalidColor(css, "css");
         }
+    }
+
+    /**
+     * Returns the type of the specified color and whether or not it is valid
+     * @method
+     * @static
+     * @param {String|Number|RGBColor} color - The color to analyze
+     * @returns {ColorType} An Object containing the color's type and whether or not it's valid
+     */
+    static getType(color) {
+        if (typeof color === "string") {
+
+            if (color.startsWith("#")) {
+                return {
+                    "type": "hex",
+                    "isValid": (color.length >= 2 && color.length <= 5 || color.length === 7 || color.length === 9) && color.search(/[^#0-f]/g) < 0
+                };
+            }
+
+            return {
+                "type": "css",
+                "isValid": _Color_CSSToHex[color] !== undefined
+            };
+
+        } else if (typeof color === "number") {
+
+            return {
+                "type": "grayscale",
+                "isValid": color >= 0 && color <= 255
+            };
+
+        } else if (color instanceof Array) {
+
+            let isValid = color.length >= 1 && color.length <= 4;
+
+            if (isValid) {
+                for (let i = 0; i < color.length; i++) {
+                    if (typeof color[i] !== "number" || color[i] < 0 || color[i] > 255) {
+                        isValid = false;
+                        break;
+                    }
+                }
+            }
+
+            return {
+                "type": "rgb",
+                isValid
+            };
+
+        }
+
+        return {
+            "type": "unknown",
+            "isValid": false
+        };
     }
 }
 
