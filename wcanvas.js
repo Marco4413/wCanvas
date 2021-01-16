@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.2.3";
+export const version = "0.2.4";
 
 /**
  * Used to compare two versions of the library
@@ -614,7 +614,7 @@ export class InvalidColor extends Error {
     /**
      * @constructor
      * @param {any} color - The color that generated this error
-     * @param {"rgba"|"hex"|"css"|"any"} type - The type of the color expected
+     * @param {"rgb"|"hex"|"css"|"any"} type - The type of the color expected
      */
     constructor(color, type) {
         super(
@@ -630,7 +630,7 @@ export class InvalidColor extends Error {
  * Used as a lookup to convert css colors to hex
  * @private
  */
-const cssColors = {
+const _Color_CSSToHex = {
     "aliceblue": "#f0f8ff",
     "antiquewhite": "#faebd7",
     "aqua": "#00ffff",
@@ -781,6 +781,12 @@ const cssColors = {
 };
 
 /**
+ * Used as a lookup to convert hex colors to css
+ * @private
+ */
+const _Color_hexToCSS = { }; { Object.keys(_Color_CSSToHex).forEach(k => _Color_hexToCSS[_Color_CSSToHex[k]] = k); }
+window._Color_hexToCSS = _Color_hexToCSS;
+/**
  * Used internally to fill Color#value in Color#toRGB
  * and to complete colors from Color.HexToRGB
  * @private
@@ -811,7 +817,7 @@ function fillRGB(rgb, includeAlpha = true) {
             break;
         }
         default: {
-            throw new InvalidColor(rgb, "rgba");
+            throw new InvalidColor(rgb, "rgb");
         }
     }
 
@@ -845,7 +851,7 @@ export class Color {
             if (color.startsWith("#")) {
                 this.value = Color.HexToRGB(color, true);
             } else {
-                this.value = Color.NameToRGB(color, true);
+                this.value = Color.CSSToRGB(color, true);
             }
 
             return;
@@ -870,7 +876,7 @@ export class Color {
                 return;
             }
 
-            throw new InvalidColor(color, "rgba");
+            throw new InvalidColor(color, "rgb");
         }
 
         throw new InvalidColor(color, "any");
@@ -887,7 +893,7 @@ export class Color {
     toRGB(includeAlpha = true) {
         for (let i = 0; i < this.value.length; i++) {
             if (typeof this.value[i] !== "number" || this.value[i] < 0 || this.value[i] > 255) {
-                throw new InvalidColor(this.value, "rgba");
+                throw new InvalidColor(this.value, "rgb");
             }
         }
 
@@ -903,12 +909,22 @@ export class Color {
      * @throws {InvalidColor}
      */
     toHex(includeAlpha = true) {
-        return this.toRGB(includeAlpha).map(
+        return "#" + this.toRGB(includeAlpha).map(
             v => {
                 const hex = v.toString(16);
                 return hex.length === 1 ? "0" + hex : hex;
             }
-        );
+        ).join("");
+    }
+
+    /**
+     * Returns Color#value as a CSS color
+     * @method
+     * @returns {String|undefined} Color#value as a CSS color
+     * @throws {InvalidColor}
+     */
+    toCSS() {
+        return _Color_hexToCSS[this.toHex(false)];
     }
 
     /**
@@ -959,20 +975,20 @@ export class Color {
     }
     
     /**
-     * Converts the specified color to an RGB one
+     * Converts the specified css color to an RGB one
      * @method
      * @static
      * @default
-     * @param {String} name - The name of the color to convert
+     * @param {String} css - The name of the color to convert
      * @param {Boolean} [includeAlpha] - Whether or not to include Alpha in the return value
-     * @returns {RGBColor} The specified color as an RGB one
+     * @returns {RGBColor} The specified css color as an RGB one
      * @throws {InvalidColor}
      */
-    static NameToRGB(name, includeAlpha = true) {
+    static CSSToRGB(css, includeAlpha = true) {
         try {
-            return Color.HexToRGB(cssColors[name.toLowerCase()], includeAlpha);
+            return Color.HexToRGB(_Color_CSSToHex[css.toLowerCase()], includeAlpha);
         } catch (err) {
-            throw new InvalidColor(name, "css");
+            throw new InvalidColor(css, "css");
         }
     }
 }
