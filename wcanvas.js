@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.2.5";
+export const version = "0.2.6";
 
 /**
  * Used to compare two versions of the library
@@ -560,7 +560,7 @@ UMath.Vec2 = class {
 
 /**
  * @typedef {Object} ColorType - An Object containing info about a Color's type (Used for {@link Color.getType})
- * @property {"rgb"|"hex"|"css"|"grayscale"|"unknown"} type - The type of the Color
+ * @property {"Color"|"rgb"|"hex"|"css"|"grayscale"|"unknown"} type - The type of the Color
  * @property {Boolean} isValid - Whether or not the Color is valid
  */
 
@@ -620,11 +620,11 @@ export class InvalidColor extends Error {
     /**
      * @constructor
      * @param {any} color - The color that generated this error
-     * @param {"rgb"|"hex"|"css"|"grayscale"|"any"} type - The type of the color expected
+     * @param {"Color"|"rgb"|"hex"|"css"|"grayscale"|"any"} type - The type of the color expected
      */
     constructor(color, type) {
         super(
-            type === "any" ?
+            type === "any" || type === "Color" ?
                 formatString("The color \"{0}\" isn't a valid one."      , String(color)      ) :
                 formatString("The color \"{0}\" isn't a valid {1} color.", String(color), type)
         );
@@ -849,7 +849,7 @@ export class Color {
 
     /**
      * @constructor
-     * @param {String|Number|RGBColor} color - Can either be a CSS, Hex or RGB Color
+     * @param {Color|String|Number|RGBColor} color - Can either be a CSS, Hex or RGB Color
      * @throws {InvalidColor}
      */
     constructor(color) {
@@ -857,6 +857,14 @@ export class Color {
         const colorType = Color.getType(color);
 
         switch (colorType.type) {
+            case "Color": {
+                if (colorType.isValid) {
+                    this.value = color.value.slice();
+                } else {
+                    throw new InvalidColor(color, "Color");
+                }
+                break;
+            }
             case "rgb": {
                 if (colorType.isValid) {
                     this.value = fillRGB(color, true);
@@ -1009,7 +1017,7 @@ export class Color {
      * Returns the type of the specified color and whether or not it is valid
      * @method
      * @static
-     * @param {String|Number|RGBColor} color - The color to analyze
+     * @param {Color|String|Number|RGBColor} color - The color to analyze
      * @returns {ColorType} An Object containing the color's type and whether or not it's valid
      */
     static getType(color) {
@@ -1051,6 +1059,24 @@ export class Color {
                 "type": "rgb",
                 isValid
             };
+
+        } else if (color instanceof Color) {
+
+            // color#value should be an instance of Array
+            // This also prevents recursion from happening if color#value is assigned to a Color
+            // Which shouldn't happen in the first place
+            if (!(color.value instanceof Array)) {
+                return {
+                    "type": "Color",
+                    "isValid": false
+                };
+            }
+
+            // From Color.getType we only want to get whether or not Color#value is valid
+            const type = Color.getType(color.value);
+            // So we change its type to Color
+            type.type = "Color";
+            return type;
 
         }
 
