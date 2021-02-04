@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.2.6";
+export const version = "0.2.7";
 
 /**
  * Used to compare two versions of the library
@@ -1366,13 +1366,14 @@ export class wCanvas {
      * @param {Number|Color} [r] - Red [0, 255] if not a number it's treated as a {@link Color}
      * @param {Number} [g] - Green [0, 255]
      * @param {Number} [b] - Blue [0, 255]
+     * @param {Number} [a] - Alpha [0, 255]
      * @returns {undefined}
      */
-    background(r = 0, g = 0, b = 0) {
+    background(r = 0, g = 0, b = 0, a = 255) {
         this.context.save();
         
         this.context.resetTransform();
-        this.fill(r, g, b);
+        this.fill(r, g, b, a);
         this.rect(0, 0, this.canvas.width, this.canvas.height, { "noStroke": true });
         
         this.context.restore();
@@ -1385,16 +1386,15 @@ export class wCanvas {
      * @param {Number|Color} [r] - Red [0, 255] if not a number it's treated as a {@link Color}
      * @param {Number} [g] - Green [0, 255]
      * @param {Number} [b] - Blue [0, 255]
+     * @param {Number} [a] - Alpha [0, 255]
      * @returns {undefined}
      */
-    fill(r = 255, g = 255, b = 255) {
-        if (typeof r === "number") {
-            this.context.fillStyle = "rgb(" + [r, g, b].join(", ") + ")";
-        } else {
-            const RGBA = r.toRGB(true);
-            RGBA[RGBA.length - 1] = RGBA[RGBA.length - 1] / 255; // Alpha must be a number between 0.0 and 1.0
-            this.context.fillStyle = "rgba(" + RGBA.join(", ") + ")";
+    fill(r = 255, g = 255, b = 255, a = 255) {
+        if (typeof r !== "number") {
+            [ r, g, b, a ] = r.toRGB(true);
         }
+
+        this.context.fillStyle = `rgba(${ r }, ${ g }, ${ b }, ${ a / 255 })`;
     }
 
     /**
@@ -1404,16 +1404,15 @@ export class wCanvas {
      * @param {Number|Color} [r] - Red [0, 255] if not a number it's treated as a {@link Color}
      * @param {Number} [g] - Green [0, 255]
      * @param {Number} [b] - Blue [0, 255]
+     * @param {Number} [a] - Alpha [0, 255]
      * @returns {undefined}
      */
-    stroke(r = 0, g = 0, b = 0) {
-        if (typeof r === "number") {
-            this.context.strokeStyle = "rgb(" + [r, g, b].join(", ") + ")";
-        } else {
-            const RGBA = r.toRGB(true);
-            RGBA[RGBA.length - 1] = RGBA[RGBA.length - 1] / 255; // Alpha must be a number between 0.0 and 1.0
-            this.context.strokeStyle = "rgba(" + RGBA.join(", ") + ")";
+    stroke(r = 0, g = 0, b = 0, a = 255) {
+        if (typeof r !== "number") {
+            [ r, g, b, a ] = r.toRGB(true);
         }
+
+        this.context.strokeStyle = `rgba(${ r }, ${ g }, ${ b }, ${ a / 255 })`;
     }
 
     /**
