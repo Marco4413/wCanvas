@@ -1391,7 +1391,9 @@ export class wCanvas {
         if (typeof r === "number") {
             this.context.fillStyle = "rgb(" + [r, g, b].join(", ") + ")";
         } else {
-            this.context.fillStyle = "rgba(" + r.toRGB(true).join(", ") + ")";
+            const RGBA = r.toRGB(true);
+            RGBA[RGBA.length - 1] = RGBA[RGBA.length - 1] / 255; // Alpha must be a number between 0.0 and 1.0
+            this.context.fillStyle = "rgba(" + RGBA.join(", ") + ")";
         }
     }
 
@@ -1408,7 +1410,9 @@ export class wCanvas {
         if (typeof r === "number") {
             this.context.strokeStyle = "rgb(" + [r, g, b].join(", ") + ")";
         } else {
-            this.context.strokeStyle = "rgba(" + r.toRGB(true).join(", ") + ")";
+            const RGBA = r.toRGB(true);
+            RGBA[RGBA.length - 1] = RGBA[RGBA.length - 1] / 255; // Alpha must be a number between 0.0 and 1.0
+            this.context.strokeStyle = "rgba(" + RGBA.join(", ") + ")";
         }
     }
 
