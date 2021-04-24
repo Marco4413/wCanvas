@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.2.7";
+export const version = "0.2.8";
 
 /**
  * Used to compare two versions of the library
@@ -542,6 +542,7 @@ UMath.Vec2 = class {
  * @typedef {Object} PathConfig - Paths' config
  * @property {Boolean} [noStroke] - Whether or not stroke should be applied
  * @property {Boolean} [noFill] - Whether or not the shape should be filled
+ * @property {Boolean} [noClose] - Whether or not the path should be closed
  * @property {Boolean} [round] - Whether or not corners should be round
  */
 
@@ -1647,7 +1648,9 @@ export class wCanvas {
             }
         }
 
-        this.context.closePath();
+        if (!config.noClose) {
+            this.context.closePath();
+        }
 
         if (!config.noFill) {
             this.context.fill();
@@ -1655,11 +1658,15 @@ export class wCanvas {
 
         if (!config.noStroke) {
             const oldLineJoin = this.context.lineJoin;
+            const oldLineCap  = this.context.lineCap;
+
             this.context.lineJoin = config.round || config.round === undefined ? "round" : "miter";
+            this.context.lineCap  = config.round || config.round === undefined ? "round" : "square";
 
             this.context.stroke();
             
             this.context.lineJoin = oldLineJoin;
+            this.context.lineCap  = oldLineCap;
         }
     }
 
