@@ -2,7 +2,8 @@
 import * as wcanvas from "../../wcanvas.js";
 
 window.addEventListener("load", () => {
-    const font = new wcanvas.Font("Times New Roman", 12);
+    const FONT = new wcanvas.Font("Times New Roman", 12);
+    const COLOR_BLACK = new wcanvas.Color("black");
 
     const wrappedCanvas = new wcanvas.wCanvas({
         "onSetup": (canvas) => {
@@ -12,9 +13,9 @@ window.addEventListener("load", () => {
             canvas.startLoop();
         },
         "onDraw": (canvas, deltaTime) => {
-            console.log("Frame Time: " + deltaTime);
+            // console.log("Frame Time: " + deltaTime);
 
-            canvas.background(new wcanvas.Color("black"));
+            canvas.background(COLOR_BLACK);
             canvas.translate(100 * Math.SQRT2, 0);
             canvas.rotate(Math.PI / 4);
             canvas.scale(2, 2);
@@ -30,7 +31,7 @@ window.addEventListener("load", () => {
             canvas.line(0, 0, 100, 100);
 
             canvas.rotate(-Math.PI / 4);
-            canvas.textFont(font);
+            canvas.textFont(FONT);
             canvas.textSize(20);
             const textWidth = canvas.text(
                 "This is a cool text", 100, 100,
@@ -38,6 +39,7 @@ window.addEventListener("load", () => {
             );
 
             canvas.path(
+                0, 0,
                 [[100, 100],
                  [100 + textWidth, 100],
                  [100 + textWidth / 2, 200]],

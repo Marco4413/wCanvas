@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.2.8";
+export const version = "0.2.9";
 
 /**
  * Used to compare two versions of the library
@@ -1619,11 +1619,13 @@ export class wCanvas {
     /**
      * Draws a shape using the specified vertices (Tries to draw only if there are 2 or more vertices specified)
      * @method
+     * @param {Number} [x] - The x pos from where the path should be drawn
+     * @param {Number} [y] - The y pos from where the path shuld be drawn
      * @param {Array<Array<Number>>|Array<UMath.Vec2>|Array<Vec2Object>} vertices - Array of Vertices (A vertex is this kind of array [x, y])
      * @param {PathConfig} [config] - Other options
      * @returns {undefined}
      */
-    path(vertices, config = {}) {
+    path(x = 0, y = 0, vertices, config = {}) {
         if (vertices.length <= 1) {
             return;
         }
@@ -1634,17 +1636,29 @@ export class wCanvas {
         const isVec2Array = !Array.isArray(firstVertex);
 
         if (isVec2Array) {
-            this.context.moveTo(firstVertex.x, firstVertex.y);
+            this.context.moveTo(
+                firstVertex.x + x,
+                firstVertex.y + y
+            );
         } else {
-            this.context.moveTo(firstVertex[0], firstVertex[1]);
+            this.context.moveTo(
+                firstVertex[0] + x,
+                firstVertex[1] + y
+            );
         }
 
         for (let i = 1; i < vertices.length; i++) {
             const vertex = vertices[i];
             if (isVec2Array) {
-                this.context.lineTo(vertex.x, vertex.y);
+                this.context.lineTo(
+                    vertex.x + x,
+                    vertex.y + y
+                );
             } else {
-                this.context.lineTo(vertex[0], vertex[1]);
+                this.context.lineTo(
+                    vertex[0] + x,
+                    vertex[1] + y
+                );
             }
         }
 
