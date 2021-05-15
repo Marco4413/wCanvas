@@ -1620,7 +1620,7 @@ export class wCanvas {
      * Draws a shape using the specified vertices (Tries to draw only if there are 2 or more vertices specified)
      * @method
      * @param {Number} [x] - The x pos from where the path should be drawn
-     * @param {Number} [y] - The y pos from where the path shuld be drawn
+     * @param {Number} [y] - The y pos from where the path should be drawn
      * @param {Array<Array<Number>>|Array<UMath.Vec2>|Array<Vec2Object>} vertices - Array of Vertices (A vertex is this kind of array [x, y])
      * @param {PathConfig} [config] - Other options
      * @returns {undefined}
