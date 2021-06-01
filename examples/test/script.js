@@ -27,7 +27,7 @@ window.addEventListener("load", () => {
             canvas.ellipse(50, 50, 50, undefined, { "noStroke": true });
             
             canvas.stroke(255, 0, 0);
-            canvas.strokeWeigth(4);
+            canvas.strokeWeight(4);
             canvas.line(0, 0, 100, 100);
 
             canvas.rotate(-Math.PI / 4);
