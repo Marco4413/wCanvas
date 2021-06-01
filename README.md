@@ -43,3 +43,4 @@ Here's the list of all official scripts that are using this library:
  - [Tetris_wCanvas](https://github.com/hds536jhmk/Tetris_wCanvas)
  - [PFVisualizer](https://github.com/hds536jhmk/PFVisualizer) (A Path Finding Algorithm Visualizer)
  - [KarnaughMaps](https://github.com/hds536jhmk/KarnaughMaps) (A tool to visualize Karnaugh Maps)
+ - [MineSweeper](https://github.com/hds536jhmk/MineSweeper)
