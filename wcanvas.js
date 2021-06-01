@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.2.9";
+export const version = "0.2.10";
 
 /**
  * Used to compare two versions of the library
@@ -1424,7 +1424,7 @@ export class wCanvas {
      * @param {Number} [d] - The diameter of the stroke
      * @returns {undefined}
      */
-    strokeWeigth(d = 1) {
+    strokeWeight(d = 1) {
         this.context.lineWidth = d;
     }
 
