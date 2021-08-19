@@ -480,37 +480,36 @@ UMath.Vec2 = class {
 }
 
 /**
- * @callback wCanvasConfig_onResize - Function that gets called on window resize
+ * @callback wCanvas_onResize - Function that gets called on window resize
  * @param {wCanvas} canvas - The canvas it's attached to
- * @param {Window} window - The new window
- * @param {UIEvent} event - The event that triggered this call
+ * @param {Number} targetWidth - The width that this canvas should have
+ * @param {Number} targetHeight - The height that this canvas should have
  * @returns {undefined}
  */
 
 /**
- * @callback wCanvasConfig_onSetup - Function that gets called after the class was constructed
+ * @callback wCanvas_onSetup - Function that gets called after the class was constructed
  * @param {wCanvas} canvas - The canvas it's attached to
  * @returns {undefined}
  */
 
 /**
- * @callback wCanvasConfig_onDraw - Function that gets called every frame
+ * @callback wCanvas_onDraw - Function that gets called every frame
  * @param {wCanvas} canvas - The canvas it's attached to
  * @param {Number} deltaTime - The time elapsed between frames in seconds
  * @returns {undefined}
  */
 
 /**
- * **CBCL**: "Can be changed later" means that a field of the config can be changed and it will have an effect on the {@link wCanvas} it's bound to
  * @typedef {Object} wCanvasConfig - wCanvas's config
  * @property {String} [id] - The id of the canvas you want to wrap
  * @property {HTMLCanvasElement} [canvas] - The canvas you want to wrap
- * @property {Number} [width] - **CBCL** (Reapplied only on resize) The width of the canvas
- * @property {Number} [height] - **CBCL** (Reapplied only on resize) The height of the canvas
- * @property {wCanvasConfig_onResize} [onResize] - **CBCL**
- * @property {wCanvasConfig_onSetup} [onSetup] - **CBCL**
- * @property {wCanvasConfig_onDraw} [onDraw] - **CBCL**
- * @property {Number} [FPS] - The targetted FPS (If negative it will draw every time the browser lets it)
+ * @property {Number} [width] - The desired width of the canvas if onResize is undefined
+ * @property {Number} [height] - The desired height of the canvas if onResize is undefined
+ * @property {wCanvas_onResize} [onResize] - Called when canvas needs to be resized
+ * @property {wCanvas_onSetup} [onSetup] - Called when canvas is fully initialized
+ * @property {wCanvas_onDraw} [onDraw] - Called every frame
+ * @property {Number} [targetFPS] - The FPS target of the canvas (If negative it will draw every time the browser lets it)
  */
 
 /**
@@ -1114,35 +1113,93 @@ export class wCanvas {
      * @field
      * @type {Number}
      */
-    FPS;
+    targetFPS;
+    
     /**
-     * The canvas that is currently wrapped
+     * The native canvas element
      * @field
      * @constant
      * @type {HTMLCanvasElement} 
      */
-    canvas;
+    element;
+
     /**
-     * The 2D drawing context of {@link wCanvas#canvas}
+     * The 2D drawing context of {@link wCanvas#element}
      * @field
      * @constant
      * @type {CanvasRenderingContext2D}
      */
     context;
+
     /**
-     * The time at which the last frame was drawn
+     * The function to call on setup event
      * @field
-     * @readonly
+     * @type {wCanvas_onSetup}
+     */
+    onSetup;
+    
+    /**
+     * The function to call on draw event
+     * @field
+     * @type {wCanvas_onDraw}
+     */
+    onDraw;
+    
+    /**
+     * The function to call on resize event
+     * @field
+     * @type {wCanvas_onResize}
+     */
+    onResize;
+    
+    /**
+     * @field
+     * @private
      * @type {Number}
      */
-    lastFrame;
+    _lastFrameTimeStamp;
+    
     /**
-     * Whether or not this is running a draw loop
      * @field
-     * @readonly
+     * @private
      * @type {Boolean}
      */
-    looping;
+    _isLooping;
+
+    /**
+     * @field
+     * @private
+     * @type {Number|undefined}
+     */
+    _desiredWidth;
+    
+    /**
+     * @field
+     * @private
+     * @type {Number|undefined}
+     */
+    _desiredHeight;
+
+    /**
+     * @field
+     * @private
+     * @type {() => undefined}
+     */
+    _resize;
+    
+    /**
+     * @field
+     * @private
+     * @type {() => undefined}
+     */
+    _setup;
+    
+    /**
+     * @field
+     * @private
+     * @type {() => undefined}
+     */
+    _draw;
 
     /**
      * @constructor
@@ -1155,78 +1212,67 @@ export class wCanvas {
             // Check if an ID was specified
             if (config.id === undefined) {
                 // If no ID was given then create a new canvas using an UUID
-                this.canvas = document.createElement("canvas");
-                this.canvas.id = String(generateUUID());
-                document.body.appendChild(this.canvas);
+                this.element = document.createElement("canvas");
+                this.element.id = String(generateUUID());
+                document.body.appendChild(this.element);
             } else {
                 // Get the canvas with the given ID
-                this.canvas = document.getElementById(config.id);
-                if (this.canvas === null) {
+                this.element = document.getElementById(config.id);
+                if (this.element === null) {
                     throw new InvalidCanvasIDException(config.id);
                 }
             }
         } else {
             // Use the specified canvas
-            this.canvas = config.canvas;
+            this.element = config.canvas;
         }
 
         // Get the context of the created Canvas
-        this.context = this.canvas.getContext("2d");
+        this.context = this.element.getContext("2d");
 
-        const onResize = (...args) => {
-            // If the user didn't specify a callback on window resize
-            if (config.onResize === undefined) {
-                // If a width and a height were given then use them as the width and height
-                if (config.width !== undefined && config.height !== undefined) {
-                    this.canvas.width = config.width;
-                    this.canvas.height = config.height;
-                } else {
-                    // Otherwise make the canvas fullscreen
-                    this.canvas.width = window.innerWidth + 1;
-                    this.canvas.height = window.innerHeight + 1;
-                }
+        this._desiredWidth  = config.width;
+        this._desiredHeight = config.height;
+
+        this.onSetup  = config.onSetup ;
+        this.onDraw   = config.onDraw  ;
+        this.onResize = config.onResize;
+
+        this._resize = (...args) => {
+            const targetWidth  = this._desiredWidth  === undefined ? (window.innerWidth  + 1) : this._desiredWidth ;
+            const targetHeight = this._desiredHeight === undefined ? (window.innerHeight + 1) : this._desiredHeight;
+            if (this.onResize === undefined) {
+                this.element.width  = targetWidth ;
+                this.element.height = targetHeight;
             } else {
-                // Call the user-specified callback
-                config.onResize(this, ...args);
+                this.onResize(this, targetWidth, targetHeight, ...args);
             }
         }
 
-        onResize();
+        this._resize();
 
         // Add an event listener to the resize event
-        window.addEventListener("resize", onResize);
+        window.addEventListener("resize", this._resize);
 
         // A negative number of FPS means "Draw every time the browser lets you"
-        this.FPS = config.FPS === undefined ? -1 : config.FPS;
+        this.targetFPS = config.targetFPS === undefined ? -1 : config.targetFPS;
 
-        /**
-         * Calls the specified setup function from the config (If no function is found then it will start draw loop automatically)
-         * @param {...any} [args] - Arguments to be passed to setup function
-         * @returns {undefined}
-         */
-        this.setup = (...args) => {
-            if (config.onSetup) {
-                config.onSetup(this, ...args);
-            } else {
+        this._setup = (...args) => {
+            if (this.onSetup === undefined) {
                 this.startLoop();
+            } else {
+                this.onSetup(this, ...args);
             }
         };
 
-        /**
-         * Calls the specified draw function from the config
-         * @param {Number} deltaTime - Time elapsed from the last drawn frame
-         * @param {...any} [args] - Arguments to be passed to draw function
-         * @returns {undefined}
-         */
-        this.draw = (deltaTime, ...args) => {
-            if (config.onDraw) {
-                config.onDraw(this, deltaTime, ...args);
+        this._draw = (deltaTime, ...args) => {
+            if (this.onDraw !== undefined) {
+                this.onDraw(this, deltaTime, ...args);
             }
         };
 
-        this.lastFrame = 0;
-        this.looping = false;
-        this.setup();
+        this._lastFrameTimeStamp = 0;
+        this._isLooping = false;
+        this._setup();
     }
 
     /**
@@ -1236,35 +1282,35 @@ export class wCanvas {
      */
     startLoop() {
         // If it's already looping then nothing should be done
-        if (this.looping) {
+        if (this._isLooping) {
             return;
         }
 
-        this.looping = true;
+        this._isLooping = true;
 
         const callDraw = () => {
-            if (this.FPS !== 0) {
+            if (this.targetFPS !== 0) {
                 this.context.save();
                 
                 const newTimestamp = Date.now();
-                this.draw((newTimestamp - this.lastFrame) / 1_000);
-                this.lastFrame = newTimestamp;
+                this._draw((newTimestamp - this._lastFrameTimeStamp) / 1_000);
+                this._lastFrameTimeStamp = newTimestamp;
 
                 this.context.restore();
             }
 
-            if (!this.looping) {
+            if (!this._isLooping) {
                 return;
             }
 
-            if (this.FPS <= 0) {
+            if (this.targetFPS <= 0) {
                 requestAnimationFrame(callDraw);
             } else {
-                setTimeout(callDraw, 1 / this.FPS * 1_000);
+                setTimeout(callDraw, 1 / this.targetFPS * 1_000);
             }
         };
 
-        this.lastFrame = Date.now();
+        this._lastFrameTimeStamp = Date.now();
         callDraw();
     }
     
@@ -1274,7 +1320,16 @@ export class wCanvas {
      * @returns {undefined}
      */
     stopLoop() {
-        this.looping = false;
+        this._isLooping = false;
+    }
+
+    /**
+     * Whether or not this canvas's draw loop is running
+     * @method
+     * @returns {Boolean}
+     */
+    isLooping() {
+        return this._isLooping;
     }
 
     /**
@@ -1357,7 +1412,7 @@ export class wCanvas {
      * @returns {undefined}
      */
     clear() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.clearRect(0, 0, this.element.width, this.element.height);
     }
 
     /**
@@ -1375,7 +1430,7 @@ export class wCanvas {
         
         this.context.resetTransform();
         this.fill(r, g, b, a);
-        this.rect(0, 0, this.canvas.width, this.canvas.height, { "noStroke": true });
+        this.rect(0, 0, this.element.width, this.element.height, { "noStroke": true });
         
         this.context.restore();
     }
