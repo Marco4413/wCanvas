@@ -8,7 +8,7 @@ window.addEventListener("load", () => {
     const wrappedCanvas = new wcanvas.wCanvas({
         "onSetup": (canvas) => {
             console.log("WCanvas Version: " + wcanvas.version);
-            console.log("Canvas ID: " + canvas.canvas.id);
+            console.log("Canvas ID: " + canvas.element.id);
 
             canvas.startLoop();
         },
