@@ -32,7 +32,7 @@
  * @constant
  * @type {String}
  */
-export const version = "0.2.10";
+export const version = "0.3.0";
 
 /**
  * Used to compare two versions of the library
