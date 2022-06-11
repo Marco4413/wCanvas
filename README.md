@@ -32,7 +32,7 @@ window.addEventListener("load", () => {
     Using an hyperlink with the same name as the URL
     to make JSDoc understand that it should be clickable
 -->
-Sure, you can check it out at [https://hds536jhmk.github.io/wCanvas-docs/](https://hds536jhmk.github.io/wCanvas-docs/)
+Sure, you can check it out at [https://Marco4413.github.io/wCanvas-docs/](https://Marco4413.github.io/wCanvas-docs/)
 
 ### Are there any scripts that use this library?
 
@@ -40,8 +40,8 @@ Yup, sure there are!
 
 Here's the list of all official scripts that are using this library:
  - [Audio Responsive Avatar](https://steamcommunity.com/sharedfiles/filedetails/?id=2225740349) (A Wallpaper Engine wallpaper. Tho the library was modified to not use ES6 modules)
- - [Tetris_wCanvas](https://github.com/hds536jhmk/Tetris_wCanvas)
- - [PFVisualizer](https://github.com/hds536jhmk/PFVisualizer) (A Path Finding Algorithm Visualizer)
- - [KarnaughMaps](https://github.com/hds536jhmk/KarnaughMaps) (A tool to visualize Karnaugh Maps)
- - [MineSweeper](https://github.com/hds536jhmk/MineSweeper)
- - [GameOfLife](https://github.com/hds536jhmk/GameOfLife) (Conway's Game Of Life)
+ - [Tetris_wCanvas](https://github.com/Marco4413/Tetris_wCanvas)
+ - [PFVisualizer](https://github.com/Marco4413/PFVisualizer) (A Path Finding Algorithm Visualizer)
+ - [KarnaughMaps](https://github.com/Marco4413/KarnaughMaps) (A tool to visualize Karnaugh Maps)
+ - [MineSweeper](https://github.com/Marco4413/MineSweeper)
+ - [GameOfLife](https://github.com/Marco4413/GameOfLife) (Conway's Game Of Life)
