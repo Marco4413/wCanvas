@@ -1,0 +1,28 @@
+{
+  "name": "wcanvas",
+  "version": "0.3.0",
+  "description": "A Canvas Weapper for JavaScript.",
+  "main": "wcanvas.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": { },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Marco4413/wCanvas.git"
+  },
+  "keywords": [
+    "javascript",
+    "canvas",
+    "javascript-library",
+    "canvas2d",
+    "wrapper-library",
+    "canvas-wrapper"
+  ],
+  "author": "Marco4413",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Marco4413/wCanvas/issues"
+  },
+  "homepage": "https://github.com/Marco4413/wCanvas#readme"
+}
